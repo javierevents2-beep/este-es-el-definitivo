@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import Logo from '../ui/Logo';
 import LanguageSelector from '../ui/LanguageSelector';
 import CartIcon from '../cart/CartIcon';
+import { useFeatureFlags } from '../../contexts/FeatureFlagsContext';
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -45,13 +46,17 @@ const Header = () => {
     window.open(`https://wa.me/5541984875565?text=${encodeURIComponent(message)}`, '_blank');
   };
 
-  const navLinks = [
-    { name: t('nav.home'), path: '/' },
-    { name: t('nav.portfolio'), path: '/portfolio' },
-    { name: t('nav.store'), path: '/store' },
-    { name: t('nav.book'), action: handleBooking },
-    { name: t('nav.contact'), path: '/contact' },
-  ];
+  const { flags } = useFeatureFlags();
+  const navLinks = useMemo(() => {
+    const links: { name: string; path?: string; action?: () => void; key?: string }[] = [
+      { name: t('nav.home'), path: '/', key: 'home' },
+      { name: t('nav.portfolio'), path: '/portfolio', key: 'portfolio' },
+      { name: t('nav.store'), path: '/store', key: 'store' },
+      { name: t('nav.book'), action: handleBooking, key: 'booking' },
+      { name: t('nav.contact'), path: '/contact', key: 'contact' },
+    ];
+    return links.filter(l => !l.key || flags.pages[l.key as keyof typeof flags.pages]);
+  }, [t, flags]);
 
   const isHomePage = location.pathname === '/';
 
