@@ -1,7 +1,9 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import Logo from '../ui/Logo';
 import ContactBlock from './ContactBlock';
+import { useFeatureFlags } from '../../contexts/FeatureFlagsContext';
 
 const Footer = () => {
   const { t } = useTranslation();
@@ -11,14 +13,15 @@ const Footer = () => {
     window.open(`https://wa.me/5541984875565?text=${encodeURIComponent(message)}`, '_blank');
   };
 
+  const { flags } = useFeatureFlags();
   const navLinks = [
-    { name: t('nav.home'), path: '/' },
-    { name: t('nav.portraits'), path: '/portrait' },
-    { name: t('nav.maternity'), path: '/maternity' },
-    { name: t('nav.events'), path: '/events' },
-    { name: t('nav.book'), action: handleBooking },
-    { name: t('nav.contact'), path: '/contact' },
-  ];
+    { name: t('nav.home'), path: '/' , key: 'home'},
+    { name: t('nav.portraits'), path: '/portrait', key: 'portrait' },
+    { name: t('nav.maternity'), path: '/maternity', key: 'maternity' },
+    { name: t('nav.events'), path: '/events', key: 'events' },
+    { name: t('nav.book'), action: handleBooking, key: 'booking' },
+    { name: t('nav.contact'), path: '/contact', key: 'contact' },
+  ].filter(l => !l.key || flags.pages[l.key as keyof typeof flags.pages]);
 
   return (
     <footer className="bg-primary text-white py-16">
