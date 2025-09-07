@@ -8,6 +8,7 @@ import StorePopup from '../components/store/StorePopup';
 import { sessionPackages } from '../data/sessionsData';
 import { eventPackages } from '../data/eventsData';
 import { maternityPackages } from '../data/maternityData';
+import { useFeatureFlags } from '../contexts/FeatureFlagsContext';
 
 type BookingStep = 'contract' | 'form' | 'preview' | 'complete';
 
@@ -39,6 +40,7 @@ const BookingPage = () => {
   });
 
   const allPackages = [...sessionPackages, ...eventPackages, ...maternityPackages];
+  const { flags } = useFeatureFlags();
 
   useEffect(() => {
     if (cartItems && cartItems.length > 0) {
@@ -176,7 +178,7 @@ const BookingPage = () => {
                   onClick={() => window.location.href = '/maternity'}
                   className="btn-secondary w-full"
                 >
-                  Ver Sessões de Gestantes
+                  Ver Sess��es de Gestantes
                 </button>
               )}
 
