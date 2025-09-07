@@ -3,6 +3,7 @@ import { db } from '../../utils/firebaseClient';
 import { collection, getCountFromServer, getDocs, limit, orderBy, query, addDoc, updateDoc, doc } from 'firebase/firestore';
 import { DollarSign, Package, Users, ClipboardList, ArrowUpRight } from 'lucide-react';
 import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Line, Legend } from 'recharts';
+import { useFeatureFlags } from '../../contexts/FeatureFlagsContext';
 
 interface OrderLineItem {
   productId?: string;
@@ -34,6 +35,7 @@ const AdminStoreDashboard: React.FC<AdminProps> = ({ onNavigate }) => {
   const [contracts, setContracts] = useState<any[]>([]);
   const [selectedProductId, setSelectedProductId] = useState<'all' | string>('all');
   const [selectedProductIdB, setSelectedProductIdB] = useState<'none' | string>('none');
+  const { flags, setPageEnabled } = useFeatureFlags();
 
   useEffect(() => {
     (async () => {
@@ -209,6 +211,23 @@ const AdminStoreDashboard: React.FC<AdminProps> = ({ onNavigate }) => {
             <button onClick={() => onNavigate?.('products')} className="w-full border-2 border-black text-black px-4 py-3 rounded-none hover:bg-black hover:text-white">
               Administrar Productos
             </button>
+          </div>
+
+          <div className="mt-6 border-t pt-4">
+            <h4 className="font-medium mb-3">Visibilidad de Páginas</h4>
+            <p className="text-sm text-gray-600 mb-3">Habilita o deshabilita páginas para ocultarlas del sitio.</p>
+            <div className="grid grid-cols-1 gap-2">
+              {Object.entries(flags.pages).map(([key, value]) => (
+                <label key={key} className="flex items-center gap-3 border rounded-lg p-2">
+                  <input
+                    type="checkbox"
+                    checked={Boolean(value)}
+                    onChange={(e) => setPageEnabled(key as any, e.target.checked)}
+                  />
+                  <span className="capitalize text-sm">{key.replace(/([A-Z])/g, ' $1').replace(/\s+/g, ' ').trim()}</span>
+                </label>
+              ))}
+            </div>
           </div>
         </div>
 
