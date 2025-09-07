@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import CalendarSetupInstructions from '../components/ui/CalendarSetupInstructions';
+import GoogleCalendarConnect from '../components/ui/GoogleCalendarConnect';
+import { useFeatureFlags } from '../contexts/FeatureFlagsContext';
 import { db } from '../utils/firebaseClient';
 import { collection, getDocs, orderBy, query, where } from 'firebase/firestore';
 import {
@@ -28,7 +30,8 @@ import {
 } from 'lucide-react';
 
 const AdminPage = () => {
-  const [activeTab, setActiveTab] = useState('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'calendar' | 'visibility'>('dashboard');
+  const { flags, setPageEnabled } = useFeatureFlags();
   const [dateRange, setDateRange] = useState('month');
   const [financialData, setFinancialData] = useState({
     totalIncome: 0,
@@ -180,6 +183,12 @@ const AdminPage = () => {
               >
                 Calendário
               </button>
+              <button
+                onClick={() => setActiveTab('visibility')}
+                className={`px-4 py-2 rounded-lg ${activeTab === 'visibility' ? 'bg-primary text-white' : 'bg-white text-primary border border-primary'}`}
+              >
+                Visibilidad
+              </button>
             </div>
             
             <select
@@ -203,8 +212,29 @@ const AdminPage = () => {
         </div>
 
         {activeTab === 'calendar' && (
-          <div className="mb-8">
+          <div className="mb-8 space-y-6">
+            <GoogleCalendarConnect />
             <CalendarSetupInstructions />
+          </div>
+        )}
+
+        {activeTab === 'visibility' && (
+          <div className="bg-white p-6 rounded-lg shadow mb-8">
+            <h2 className="text-xl font-bold mb-4">Visibilidad de Páginas</h2>
+            <p className="text-gray-600 mb-4">Habilita o deshabilita secciones del sitio para publicar solo lo que está listo.</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              {Object.entries(flags.pages).map(([key, value]) => (
+                <label key={key} className="flex items-center gap-3 border rounded-lg p-3">
+                  <input
+                    type="checkbox"
+                    checked={Boolean(value)}
+                    onChange={(e) => setPageEnabled(key as any, e.target.checked)}
+                  />
+                  <span className="capitalize">{key.replace(/([A-Z])/g, ' $1').replace(/\s+/g, ' ').trim()}</span>
+                </label>
+              ))}
+            </div>
+            <p className="text-xs text-gray-500 mt-4">Los cambios se guardan automáticamente. Se sincronizan en Firestore (config/featureFlags) con respaldo local.</p>
           </div>
         )}
 
