@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { db } from '../../utils/firebaseClient';
 import { collection, getCountFromServer, getDocs, limit, orderBy, query, addDoc, updateDoc, doc } from 'firebase/firestore';
 import { DollarSign, Package, Users, ClipboardList, ArrowUpRight } from 'lucide-react';
