@@ -4,9 +4,11 @@ import CTA from '../components/home/CTA';
 import { Camera, Users, Baby } from 'lucide-react';
 import Button from '../components/ui/Button';
 import { useTranslation } from 'react-i18next';
+import { useFeatureFlags } from '../contexts/FeatureFlagsContext';
 
 const HomePage = () => {
   const { t } = useTranslation();
+  const { flags } = useFeatureFlags();
 
   return (
     <>
@@ -21,36 +23,44 @@ const HomePage = () => {
               {t('home.services.subtitle')}
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="bg-white p-8 text-center rounded-lg shadow-md transform hover:scale-105 transition-transform duration-300 flex flex-col">
-                <Camera size={48} className="text-secondary mx-auto mb-6" />
-                <h3 className="text-2xl font-playfair mb-4">{t('home.services.portraits.title')}</h3>
-                <p className="text-gray-600 mb-6 flex-grow">
-                  {t('home.services.portraits.description')}
-                </p>
-                <Button to="/portrait" variant="primary" className="w-full">
-                  {t('nav.portraits')}
-                </Button>
-              </div>
-              <div className="bg-white p-8 text-center rounded-lg shadow-md transform hover:scale-105 transition-transform duration-300 flex flex-col">
-                <Baby size={48} className="text-secondary mx-auto mb-6" />
-                <h3 className="text-2xl font-playfair mb-4">{t('home.services.maternity.title')}</h3>
-                <p className="text-gray-600 mb-6 flex-grow">
-                  {t('home.services.maternity.description')}
-                </p>
-                <Button to="/maternity" variant="primary" className="w-full">
-                  {t('nav.maternity')}
-                </Button>
-              </div>
-              <div className="bg-white p-8 text-center rounded-lg shadow-md transform hover:scale-105 transition-transform duration-300 flex flex-col">
-                <Users size={48} className="text-secondary mx-auto mb-6" />
-                <h3 className="text-2xl font-playfair mb-4">{t('home.services.events.title')}</h3>
-                <p className="text-gray-600 mb-6 flex-grow">
-                  {t('home.services.events.description')}
-                </p>
-                <Button to="/events" variant="primary" className="w-full">
-                  {t('nav.events')}
-                </Button>
-              </div>
+              {flags.pages.portrait && (
+                <div className="bg-white p-8 text-center rounded-lg shadow-md transform hover:scale-105 transition-transform duration-300 flex flex-col">
+                  <Camera size={48} className="text-secondary mx-auto mb-6" />
+                  <h3 className="text-2xl font-playfair mb-4">{t('home.services.portraits.title')}</h3>
+                  <p className="text-gray-600 mb-6 flex-grow">
+                    {t('home.services.portraits.description')}
+                  </p>
+                  <Button to="/portrait" variant="primary" className="w-full">
+                    {t('nav.portraits')}
+                  </Button>
+                </div>
+              )}
+
+              {flags.pages.maternity && (
+                <div className="bg-white p-8 text-center rounded-lg shadow-md transform hover:scale-105 transition-transform duration-300 flex flex-col">
+                  <Baby size={48} className="text-secondary mx-auto mb-6" />
+                  <h3 className="text-2xl font-playfair mb-4">{t('home.services.maternity.title')}</h3>
+                  <p className="text-gray-600 mb-6 flex-grow">
+                    {t('home.services.maternity.description')}
+                  </p>
+                  <Button to="/maternity" variant="primary" className="w-full">
+                    {t('nav.maternity')}
+                  </Button>
+                </div>
+              )}
+
+              {flags.pages.events && (
+                <div className="bg-white p-8 text-center rounded-lg shadow-md transform hover:scale-105 transition-transform duration-300 flex flex-col">
+                  <Users size={48} className="text-secondary mx-auto mb-6" />
+                  <h3 className="text-2xl font-playfair mb-4">{t('home.services.events.title')}</h3>
+                  <p className="text-gray-600 mb-6 flex-grow">
+                    {t('home.services.events.description')}
+                  </p>
+                  <Button to="/events" variant="primary" className="w-full">
+                    {t('nav.events')}
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -60,9 +70,9 @@ const HomePage = () => {
         <div className="container-custom">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <div>
-              <img 
-                src="https://images.pexels.com/photos/3014856/pexels-photo-3014856.jpeg?auto=compress&cs=tinysrgb&w=1600" 
-                alt="Fotógrafa em ação" 
+              <img
+                src="https://images.pexels.com/photos/3014856/pexels-photo-3014856.jpeg?auto=compress&cs=tinysrgb&w=1600"
+                alt="Fotógrafa em ação"
                 className="rounded-lg shadow-lg"
               />
             </div>
