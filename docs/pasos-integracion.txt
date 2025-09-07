@@ -1,0 +1,107 @@
+Guía detallada (Google Calendar y Mercado Pago) + Visibilidad de páginas
+
+====================================
+1) Integración con Mercado Pago
+====================================
+Prerrequisitos
+- Cuenta de Mercado Pago (credenciales de producción o sandbox)
+- Sitio desplegado en Netlify (o local con funciones Netlify)
+
+A. Variables de entorno
+- Netlify: agrega MP_ACCESS_TOKEN en el panel del sitio (Site settings → Environment variables):
+  - MP_ACCESS_TOKEN = APP_USR-<tu-access-token>
+  Archivo de referencia: netlify/functions/mercadopago-create-preference.js (líneas 25-35)
+
+B. Redirección de funciones (API → Functions)
+- netlify.toml ya mapea /api/* → funciones:
+  Archivo: netlify.toml (líneas 8-11)
+
+C. Crear preferencia y checkout
+- Flujo de pago en frontend:
+  Archivo: src/components/booking/PaymentModal.tsx (líneas 53-67)
+  - Llama a mercadoPago.createPreference y abre init_point en nueva ventana.
+- Construcción de preferencia (URLs de retorno y webhook):
+  Archivo: src/utils/mercadoPago.ts
+  - Base URL local/prod: líneas 31-34
+  - back_urls y notification_url: líneas 97-105
+- Endpoint serverless para crear preferencias:
+  Archivo: netlify/functions/mercadopago-create-preference.js
+  - Uso de MP_ACCESS_TOKEN y llamada a API: líneas 25-45
+
+D. Webhook de pago
+- Configura en tu cuenta de Mercado Pago (Notificaciones Webhook):
+  URL: https://<tu-dominio>/api/mercadopago/webhook
+- Manejador del webhook:
+  Archivo: netlify/functions/mercadopago-webhook.js
+
+E. Comprobaciones
+- Desplegar a Netlify y probar un pago (PIX/tarjeta). Si falla, revisar logs de funciones en Netlify y que MP_ACCESS_TOKEN exista.
+
+====================================
+2) Integración con Google Calendar
+====================================
+Prerrequisitos
+- Proyecto en Google Cloud con Calendar API habilitada
+
+A. Habilitar API & OAuth
+1. Habilita Google Calendar API en tu proyecto GCP.
+2. Crea credenciales OAuth 2.0 (Web application). En “Authorized JavaScript origins” agrega:
+   - https://<tu-dominio> (producción)
+   - http://localhost:5173 (desarrollo)
+   Nota: Para Google Identity Services (Token Client) no necesitas redirect URI, solo el origen.
+
+B. Variable de entorno
+- Netlify: agrega VITE_GCAL_CLIENT_ID con el Client ID de OAuth.
+  Requisito en código: src/components/ui/GoogleCalendarConnect.tsx (líneas 31-37 y 79-81)
+
+C. Conexión desde el panel Admin
+- Abre /admin → pestaña “Calendário”.
+- Botón “Conectar Google Calendar” (usa Google Identity Services):
+  Archivo: src/components/ui/GoogleCalendarConnect.tsx
+  - Carga del script GIS: líneas 18-29
+  - Solicitud de token y seteo en GoogleCalendarService: líneas 40-53 y 45-47
+- Servicio que crea eventos:
+  Archivo: src/utils/googleCalendar.ts
+  - Gestión de token: líneas 24-31
+  - Crear evento: líneas 33-46
+  - Evento a partir de reserva: líneas 60-95
+- Uso después del pago (opcional): en PaymentModal, paso “calendar”.
+  Archivo: src/components/booking/PaymentModal.tsx (líneas 80-98, 202-218)
+
+D. Alternativa manual (solo pruebas)
+- Pegar access token en consola del navegador:
+  window.__GCAL_TOKEN = 'ya29.a0Af...'
+  (Ver UI de instrucciones) Archivo: src/components/ui/CalendarSetupInstructions.tsx
+
+====================================
+3) Habilitar/Deshabilitar páginas desde Admin
+====================================
+Qué hace
+- Permite ocultar páginas del menú y bloquear acceso directo hasta que estén listas.
+
+Archivos añadidos
+- src/contexts/FeatureFlagsContext.tsx (persistencia en Firestore: doc config/featureFlags; fallback localStorage)
+- src/components/ui/GuardedRoute.tsx (bloquea acceso si la página está deshabilitada)
+
+Cambios en archivos existentes
+- App: envolver con FeatureFlagsProvider y proteger rutas con GuardedRoute
+  Archivo: src/App.tsx
+  - Imports añadidos: líneas 4-5
+  - Provider y rutas protegidas: líneas 25-41
+- Header: filtra enlaces del menú según flags
+  Archivo: src/components/layout/Header.tsx
+  - Uso de flags y filtrado: líneas 49-59
+- Admin: nueva pestaña “Visibilidad” + botón de conexión Calendar
+  Archivo: src/pages/AdminPage.tsx
+  - Estado de pestaña y flags: líneas 33-35
+  - Pestaña Calendário con botón “Conectar Google Calendar”: líneas ~ 140-148 (bloque que incluye <GoogleCalendarConnect />)
+  - Nueva pestaña “Visibilidad” con checkboxes que guardan en Firestore
+
+Cómo usar
+1. Ve a /admin → “Visibilidad”.
+2. Marca/desmarca páginas (se guarda automáticamente en Firestore en config/featureFlags).
+3. El menú y el acceso directo quedarán ocultos/bloqueados.
+
+Notas de seguridad
+- No publiques tokens de Google en el cliente en producción; usa cuentas de servicio/backend si necesitas automatización sin intervención del usuario.
+- Mantén MP_ACCESS_TOKEN solo en variables de entorno del proveedor (Netlify). No lo incluyas en el repo.
