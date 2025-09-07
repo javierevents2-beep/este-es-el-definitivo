@@ -69,9 +69,15 @@ const Header = () => {
       }`}
     >
       <div className="container-custom flex justify-between items-center">
-        <Link to="/" className="z-50">
-          <Logo dark={false} />
-        </Link>
+        {flags.pages.home ? (
+          <Link to="/" className="z-50">
+            <Logo dark={false} />
+          </Link>
+        ) : (
+          <div className="z-50">
+            <Logo dark={false} />
+          </div>
+        )}
 
         <nav className="hidden md:flex items-center space-x-8">
           <ul className="flex space-x-8">
