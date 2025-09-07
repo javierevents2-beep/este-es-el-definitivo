@@ -1,6 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import Button from '../ui/Button';
 import { useNavigate } from 'react-router-dom';
+import { useFeatureFlags } from '../../contexts/FeatureFlagsContext';
+import { useTranslation } from 'react-i18next';
 
 const CTA = () => {
   const { t } = useTranslation();
