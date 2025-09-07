@@ -7,8 +7,10 @@ import { useTranslation } from 'react-i18next';
 const CTA = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { flags } = useFeatureFlags();
 
   const handleBooking = () => {
+    if (!flags.pages.booking) return;
     navigate('/booking');
   };
 
