@@ -176,8 +176,8 @@ const AdminStoreDashboard: React.FC<AdminProps> = ({ onNavigate }) => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="section-title">Panel de Administración</h1>
-        <p className="text-gray-600">Gestiona tu tienda de productos personalizados</p>
+        <h1 className="section-title">Painel de Administração</h1>
+        <p className="text-gray-600">Gerencie sua loja de produtos personalizados</p>
       </div>
 
       {/* Stats */}
