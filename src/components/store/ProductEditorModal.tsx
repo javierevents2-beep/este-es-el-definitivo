@@ -318,12 +318,62 @@ const ProductEditorModal: React.FC<Props> = ({ open, onClose, product, onSaved }
 
       {showDeleteCatConfirm && (
         <div className="fixed inset-0 z-60 flex items-center justify-center bg-black bg-opacity-40 p-4">
-          <div className="bg-white rounded-lg max-w-md w-full p-6 shadow-lg">
-            <h3 className="text-lg font-semibold mb-2">Confirmar eliminación</h3>
-            <p className="text-sm text-gray-600 mb-4">¿Estás seguro de que deseas eliminar la categoría "{deletingCategory || form.category}"? Esto reasignará los productos a la categoría "otros".</p>
+          <div className="bg-white rounded-lg max-w-2xl w-full p-6 shadow-lg">
+            <div className="flex items-start justify-between mb-3">
+              <div>
+                <h3 className="text-lg font-semibold">Confirmar eliminación</h3>
+                <p className="text-sm text-gray-600">Estás a punto de eliminar la categoría "{deletingCategory || form.category}".</p>
+              </div>
+              <div className="text-right">
+                <div className="text-sm text-gray-500">Afectados</div>
+                <div className="text-xl font-bold">{loadingAffected ? '...' : affectedProducts.length}</div>
+              </div>
+            </div>
+
+            <div className="mb-4">
+              <label className="text-sm text-gray-600">Reasignar a todos:</label>
+              <div className="flex items-center gap-2 mt-2">
+                <select value={bulkReassign || ''} onChange={e => {
+                  const v = e.target.value || null;
+                  setBulkReassign(v);
+                  if (v !== null) setAffectedProducts(prev => prev.map(p => ({ ...p, newCategory: v })));
+                }} className="px-3 py-2 border rounded-md">
+                  <option value="">Otros (predeterminado)</option>
+                  {categories.map(c => <option key={c} value={c}>{c}</option>)}
+                </select>
+                <div className="text-sm text-gray-500">(Opcional)</div>
+              </div>
+            </div>
+
+            <div className="max-h-64 overflow-auto border rounded p-2 mb-4">
+              {loadingAffected && <div className="text-sm text-gray-500">Cargando productos afectados...</div>}
+              {!loadingAffected && affectedProducts.length === 0 && <div className="text-sm text-gray-500">No hay productos con esta categoría.</div>}
+              {!loadingAffected && affectedProducts.length > 0 && (
+                <ul className="space-y-2">
+                  {affectedProducts.map((p, idx) => (
+                    <li key={p.id} className="flex items-center justify-between gap-3 p-2 rounded hover:bg-gray-50">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center text-xs text-gray-600">{String(idx+1)}</div>
+                        <div>
+                          <div className="text-sm font-medium">{p.name}</div>
+                          <div className="text-xs text-gray-500">ID: {p.id}</div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <select value={p.newCategory} onChange={e => setAffectedProducts(prev => prev.map(pp => pp.id === p.id ? { ...pp, newCategory: e.target.value } : pp))} className="px-2 py-1 border rounded-md">
+                          <option value="otros">Otros</option>
+                          {categories.map(c => <option key={c} value={c}>{c}</option>)}
+                        </select>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
             <div className="flex justify-end gap-3">
-              <button onClick={() => { setShowDeleteCatConfirm(false); setDeletingCategory(null); }} className="px-4 py-2 border rounded">Cancelar</button>
-              <button onClick={handleDeleteCategory} className="px-4 py-2 bg-red-600 text-white rounded">Eliminar</button>
+              <button onClick={() => { setShowDeleteCatConfirm(false); setDeletingCategory(null); setAffectedProducts([]); setBulkReassign(null); }} className="px-4 py-2 border rounded">Cancelar</button>
+              <button onClick={handleDeleteCategory} className="px-4 py-2 bg-red-600 text-white rounded">Eliminar y reasignar</button>
             </div>
           </div>
         </div>
