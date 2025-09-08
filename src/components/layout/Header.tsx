@@ -50,7 +50,7 @@ const Header = () => {
     }
   };
 
-  const submitAdminModal = () => {
+  const submitAdminModal = async () => {
     if (!adminModalKey) { setAdminModalError('Insira a senha'); return; }
     if (adminModalKey === '1234') {
       try {
