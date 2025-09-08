@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, lazy, Suspense } from 'react';
 import { db } from '../../utils/firebaseClient';
 import { collection, getCountFromServer, getDocs, limit, orderBy, query, addDoc, updateDoc, doc } from 'firebase/firestore';
 import { DollarSign, Package, Users, ClipboardList, ArrowUpRight } from 'lucide-react';
-import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Line, Legend } from 'recharts';
+const ChartPerformance = lazy(() => import('./ChartPerformance'));
 import { useFeatureFlags } from '../../contexts/FeatureFlagsContext';
 
 interface OrderLineItem {
@@ -284,20 +284,14 @@ const AdminStoreDashboard: React.FC<AdminProps> = ({ onNavigate }) => {
           </div>
         </div>
         <div className="h-64">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={computeMonthlyCompare(allOrders, contracts, selectedProductId, selectedProductIdB)} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
-              <YAxis />
-              <Tooltip formatter={(v: any) => `$${Number(v).toFixed(0)}`} />
-              <Legend />
-              <Line type="monotone" dataKey="a" name={resolveName(products, selectedProductId)} stroke="#111827" strokeWidth={2} dot={false} />
-              <Line type="monotone" dataKey="forecast" name="Ingresos Futuros" stroke="#6b7280" strokeWidth={2} strokeDasharray="6 6" dot={false} />
-              {selectedProductIdB !== 'none' && (
-                <Line type="monotone" dataKey="b" name={resolveName(products, selectedProductIdB)} stroke="#0ea5e9" strokeWidth={2} dot={false} />
-              )}
-            </LineChart>
-          </ResponsiveContainer>
+          <Suspense fallback={<div className="h-64 flex items-center justify-center">Cargando gráfico...</div>}>
+            <ChartPerformance
+              data={computeMonthlyCompare(allOrders, contracts, selectedProductId, selectedProductIdB)}
+              products={products}
+              selectedProductId={selectedProductId}
+              selectedProductIdB={selectedProductIdB}
+            />
+          </Suspense>
         </div>
       </div>
     </div>
