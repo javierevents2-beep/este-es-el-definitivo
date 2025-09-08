@@ -28,6 +28,7 @@ function App() {
           <Router>
             <ScrollToTop />
             <Layout>
+              <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Cargando...</div>}>
               <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/portfolio" element={<GuardedRoute page="portfolio"><PortfolioPage /></GuardedRoute>} />
@@ -43,6 +44,7 @@ function App() {
                 <Route path="/admin-store" element={<GuardedRoute page="admin"><AdminStorePage /></GuardedRoute>} />
                 <Route path="*" element={<HomePage />} />
               </Routes>
+            </Suspense>
             </Layout>
           </Router>
         </FeatureFlagsProvider>
