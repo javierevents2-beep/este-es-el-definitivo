@@ -201,7 +201,7 @@ const AdminStoreDashboard: React.FC<AdminProps> = ({ onNavigate }) => {
           <h3 className="font-medium mb-4">Ações Rápidas</h3>
           <div className="space-y-3">
             <button onClick={() => onNavigate?.('orders')} className="w-full border-2 border-black text-black px-4 py-3 rounded-none hover:bg-black hover:text-white flex items-center justify-center gap-2">
-              Ver Órdenes
+              Ver Pedidos
               <ArrowUpRight size={18} />
             </button>
             <button onClick={() => onNavigate?.('contracts')} className="w-full border-2 border-black text-black px-4 py-3 rounded-none hover:bg-black hover:text-white flex items-center justify-center gap-2">
