@@ -57,7 +57,7 @@ const Header = () => {
       setAdminModalError('');
       navigate('/admin-store');
     } else {
-      setAdminModalError('Clave incorrecta');
+      setAdminModalError('Senha incorreta');
     }
   };
 
