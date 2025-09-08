@@ -66,6 +66,8 @@ const StorePage = () => {
       if (adminPassword === '1234') {
         setIsAdmin(true);
         setAdminView('dashboard');
+        try { localStorage.setItem('site_admin_mode', '1'); } catch (_) {}
+        window.dispatchEvent(new CustomEvent('siteAdminModeChanged', { detail: true }));
       } else if (adminPassword !== null) {
         alert('Senha incorreta');
       }
@@ -74,6 +76,8 @@ const StorePage = () => {
       setEditingProduct(null);
       setEditorOpen(false);
       setAdminView('dashboard');
+      try { localStorage.removeItem('site_admin_mode'); } catch (_) {}
+      window.dispatchEvent(new CustomEvent('siteAdminModeChanged', { detail: false }));
     }
   };
 
