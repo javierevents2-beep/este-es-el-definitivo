@@ -47,14 +47,14 @@ const Hero = () => {
       
       <div className="relative z-20 h-full flex items-center">
         <div className="container-custom">
-          <div className="max-w-2xl text-white hero-reveal">
+          <div className="max-w-3xl mx-auto text-center text-white hero-reveal">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-playfair font-semibold mb-4">
               {t('home.hero.title')}
             </h1>
             <p className="text-lg md:text-xl opacity-90 mb-8">
               {t('home.hero.subtitle')}
             </p>
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-wrap gap-4 justify-center">
               <button
                 onClick={() => navigate('/portfolio')}
                 className="btn-secondary"
@@ -69,7 +69,7 @@ const Hero = () => {
               </button>
             </div>
             
-            <div className="mt-12 flex space-x-3">
+            <div className="mt-12 flex justify-center space-x-3">
               {heroImages.map((_, index) => (
                 <button
                   key={index}
