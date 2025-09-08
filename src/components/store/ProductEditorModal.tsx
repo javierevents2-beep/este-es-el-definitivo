@@ -47,6 +47,9 @@ const ProductEditorModal: React.FC<Props> = ({ open, onClose, product, onSaved }
   const [newCategory, setNewCategory] = useState('');
   const [showDeleteCatConfirm, setShowDeleteCatConfirm] = useState(false);
   const [deletingCategory, setDeletingCategory] = useState<string | null>(null);
+  const [affectedProducts, setAffectedProducts] = useState<{ id: string; name: string; newCategory: string }[]>([]);
+  const [loadingAffected, setLoadingAffected] = useState(false);
+  const [bulkReassign, setBulkReassign] = useState<string | null>(null);
 
   useEffect(() => {
     if (product) {
