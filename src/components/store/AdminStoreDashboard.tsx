@@ -237,7 +237,7 @@ const AdminStoreDashboard: React.FC<AdminProps> = ({ onNavigate }) => {
           <div className="divide-y">
             {nearestContracts.length === 0 && (
               <div className="text-gray-500 text-sm p-4 flex items-center justify-between">
-                <span>No hay contratos próximos</span>
+                <span>Não há contratos próximos</span>
               </div>
             )}
             {nearestContracts.map(({ c, future }) => (
