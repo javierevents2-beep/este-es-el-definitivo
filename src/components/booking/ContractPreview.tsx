@@ -81,11 +81,28 @@ const ContractPreview = ({ data, onConfirm, onBack }: ContractPreviewProps) => {
 
       // Upload to Firebase Storage
       const fileRef = ref(storage, `contracts/${(typeof window !== 'undefined' && localStorage.getItem('uid')) || 'anonymous'}/${contractId}.pdf`);
-      await uploadBytes(fileRef, pdfBlob, { contentType: 'application/pdf' });
-      const downloadUrl = await getDownloadURL(fileRef);
+      try {
+        await uploadBytes(fileRef, pdfBlob, { contentType: 'application/pdf' });
+        const downloadUrl = await getDownloadURL(fileRef);
 
-      // Update contract with PDF URL
-      await updateContractStatus(contractId, { pdfUrl: downloadUrl } as any);
+        // Update contract with PDF URL
+        await updateContractStatus(contractId, { pdfUrl: downloadUrl } as any);
+
+        // Trigger download for the user
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.download = `contrato-wild-pictures-studio-${data.name.toLowerCase().replace(/\s+/g, '-')}.pdf`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } catch (e: any) {
+        console.error('Upload to storage failed', e);
+        if (e && e.code === 'storage/unauthorized') {
+          alert('No tienes permiso para subir el contrato al Storage. Por favor inicia sesión o contacta al administrador.');
+        } else {
+          alert('Error al subir el contrato al storage. El contrato fue guardado en Firestore, pero no se pudo subir el archivo.');
+        }
+      }
 
       // Trigger download for the user
       const link = document.createElement('a');
@@ -477,8 +494,8 @@ const ContractPreview = ({ data, onConfirm, onBack }: ContractPreviewProps) => {
                       {selectedDresses.map((dress) => (
                         <div key={dress.id} className="text-center">
                           <div className="aspect-square overflow-hidden rounded-lg mb-2">
-                            <img 
-                              src={dress.image} 
+                            <img loading="lazy"
+                              src={dress.image}
                               alt={dress.name}
                               className="w-full h-full object-cover"
                             />

@@ -42,7 +42,7 @@ const SessionsPage = () => {
             {sessionPackages.map((pkg) => (
               <div key={pkg.id} className="card flex flex-col h-full">
                 <div className="h-56 overflow-hidden mb-4">
-                  <img 
+                  <img loading="lazy"
                     src={pkg.image} 
                     alt={pkg.title} 
                     className="w-full h-full object-cover"
@@ -94,7 +94,7 @@ const SessionsPage = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {filteredImages.map((image) => (
               <div key={image.id} className="gallery-item">
-                <img 
+                <img loading="lazy"
                   src={image.src} 
                   alt={image.alt} 
                   className="w-full h-80 object-cover"

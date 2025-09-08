@@ -71,9 +71,9 @@ const FeaturedSessions = () => {
               className={`card flex flex-col h-full slide-up delay-${index + 1}`}
             >
               <div className="h-56 overflow-hidden mb-4">
-                <img 
-                  src={pkg.image} 
-                  alt={t('sessions.packageImageAlt', { package: pkg.title })} 
+                <img loading="lazy"
+                  src={pkg.image}
+                  alt={t('sessions.packageImageAlt', { package: pkg.title })}
                   className="w-full h-full object-cover"
                 />
               </div>

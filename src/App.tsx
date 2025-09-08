@@ -1,3 +1,4 @@
+import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { CartProvider } from './contexts/CartContext';
 import { AuthProvider } from './contexts/AuthContext';
@@ -5,17 +6,18 @@ import { FeatureFlagsProvider } from './contexts/FeatureFlagsContext';
 import GuardedRoute from './components/ui/GuardedRoute';
 import Layout from './components/layout/Layout';
 import ScrollToTop from './components/ui/ScrollToTop';
-import HomePage from './pages/HomePage';
-import PortfolioPage from './pages/PortfolioPage';
-import PortraitPage from './pages/PortraitPage';
-import MaternityPage from './pages/MaternityPage';
-import EventsPage from './pages/EventsPage';
-import ContactPage from './pages/ContactPage';
-import StorePage from './pages/StorePage';
-import AdminPage from './pages/AdminPage';
-import BookingPage from './pages/BookingPage';
-import ClientDashboardPage from './pages/ClientDashboardPage';
-import PackagesAdminPage from './pages/PackagesAdminPage';
+const HomePage = lazy(() => import('./pages/HomePage'));
+const PortfolioPage = lazy(() => import('./pages/PortfolioPage'));
+const PortraitPage = lazy(() => import('./pages/PortraitPage'));
+const MaternityPage = lazy(() => import('./pages/MaternityPage'));
+const EventsPage = lazy(() => import('./pages/EventsPage'));
+const ContactPage = lazy(() => import('./pages/ContactPage'));
+const StorePage = lazy(() => import('./pages/StorePage'));
+const AdminPage = lazy(() => import('./pages/AdminPage'));
+const BookingPage = lazy(() => import('./pages/BookingPage'));
+const ClientDashboardPage = lazy(() => import('./pages/ClientDashboardPage'));
+const PackagesAdminPage = lazy(() => import('./pages/PackagesAdminPage'));
+const AdminStorePage = lazy(() => import('./pages/AdminStorePage'));
 import './styles/globals.css';
 
 function App() {
@@ -26,6 +28,7 @@ function App() {
           <Router>
             <ScrollToTop />
             <Layout>
+              <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Cargando...</div>}>
               <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/portfolio" element={<GuardedRoute page="portfolio"><PortfolioPage /></GuardedRoute>} />
@@ -38,8 +41,10 @@ function App() {
                 <Route path="/admin" element={<GuardedRoute page="admin"><AdminPage /></GuardedRoute>} />
                 <Route path="/dashboard" element={<GuardedRoute page="clientDashboard"><ClientDashboardPage /></GuardedRoute>} />
                 <Route path="/packages-admin" element={<GuardedRoute page="packagesAdmin"><PackagesAdminPage /></GuardedRoute>} />
+                <Route path="/admin-store" element={<GuardedRoute page="admin"><AdminStorePage /></GuardedRoute>} />
                 <Route path="*" element={<HomePage />} />
               </Routes>
+            </Suspense>
             </Layout>
           </Router>
         </FeatureFlagsProvider>

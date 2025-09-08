@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { X, Plus, Trash2, Upload } from 'lucide-react';
+import { X, Plus, Trash2, Upload, Check } from 'lucide-react';
 import { db } from '../../utils/firebaseClient';
-import { addDoc, collection, doc, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, doc, updateDoc, getDocs } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 export interface ProductInput {
@@ -42,6 +42,15 @@ const ProductEditorModal: React.FC<Props> = ({ open, onClose, product, onSaved }
   const [saving, setSaving] = useState(false);
   const fileRef = useRef<HTMLInputElement | null>(null);
 
+  const [categories, setCategories] = useState<string[]>([]);
+  const [showNewCategory, setShowNewCategory] = useState(false);
+  const [newCategory, setNewCategory] = useState('');
+  const [showDeleteCatConfirm, setShowDeleteCatConfirm] = useState(false);
+  const [deletingCategory, setDeletingCategory] = useState<string | null>(null);
+  const [affectedProducts, setAffectedProducts] = useState<{ id: string; name: string; newCategory: string }[]>([]);
+  const [loadingAffected, setLoadingAffected] = useState(false);
+  const [bulkReassign, setBulkReassign] = useState<string | null>(null);
+
   useEffect(() => {
     if (product) {
       setForm({
@@ -75,13 +84,94 @@ const ProductEditorModal: React.FC<Props> = ({ open, onClose, product, onSaved }
     }
   }, [product]);
 
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const snap = await getDocs(collection(db, 'products'));
+        const cats = Array.from(new Set(snap.docs.map(d => ((d.data() as any).category || '').trim()).filter(Boolean)));
+        setCategories(cats);
+      } catch (e) {
+        setCategories([]);
+      }
+    };
+    loadCategories();
+  }, []);
+
   const handleUpload = async (file: File) => {
-    const storage = getStorage();
-    const key = `product_images/${Date.now()}-${file.name}`;
-    const storageRef = ref(storage, key);
-    await uploadBytes(storageRef, file);
-    const url = await getDownloadURL(storageRef);
-    setForm(prev => ({ ...prev, image_url: url }));
+    try {
+      const storage = getStorage();
+      const key = `product_images/${Date.now()}-${file.name}`;
+      const storageRef = ref(storage, key);
+      await uploadBytes(storageRef, file);
+      const url = await getDownloadURL(storageRef);
+      setForm(prev => ({ ...prev, image_url: url }));
+    } catch (e: any) {
+      console.error('Product image upload failed', e);
+      if (e && e.code === 'storage/unauthorized') {
+        alert('No tienes permiso para subir imágenes al Storage. Inicia sesión o verifica las reglas de Firebase.');
+      } else {
+        alert('Error al subir la imagen. Revisa la consola para más detalles.');
+      }
+    }
+  };
+
+  const addCategory = () => {
+    const c = (newCategory || '').trim();
+    if (!c) return;
+    if (!categories.includes(c)) setCategories(prev => [...prev, c]);
+    setForm(prev => ({ ...prev, category: c }));
+    setNewCategory('');
+    setShowNewCategory(false);
+  };
+
+  useEffect(() => {
+    const loadAffected = async () => {
+      if (!showDeleteCatConfirm) return;
+      const cat = deletingCategory || form.category;
+      if (!cat) return;
+      setLoadingAffected(true);
+      try {
+        const snap = await getDocs(collection(db, 'products'));
+        const list = snap.docs.map(d => ({ id: d.id, name: (d.data() as any).name || 'Producto' }));
+        const affected = (snap.docs)
+          .map(d => ({ id: d.id, name: (d.data() as any).name || 'Producto' , category: (d.data() as any).category || '' }))
+          .filter(p => p.category === cat)
+          .map(p => ({ id: p.id, name: p.name, newCategory: 'otros' }));
+        setAffectedProducts(affected);
+      } catch (e) {
+        setAffectedProducts([]);
+      } finally {
+        setLoadingAffected(false);
+      }
+    };
+    loadAffected();
+  }, [showDeleteCatConfirm, deletingCategory, form.category]);
+
+  const handleDeleteCategory = async () => {
+    const cat = deletingCategory || form.category;
+    if (!cat) return;
+    try {
+      const updates: Promise<any>[] = [];
+      const targets = affectedProducts.length ? affectedProducts : [];
+      for (const p of targets) {
+        const targetCat = p.newCategory || 'otros';
+        updates.push(updateDoc(doc(db, 'products', p.id), { category: targetCat }));
+      }
+      await Promise.all(updates);
+      setCategories(prev => prev.filter(c => c !== cat));
+      setForm(prev => ({ ...prev, category: 'otros' }));
+      setShowDeleteCatConfirm(false);
+      setDeletingCategory(null);
+      setAffectedProducts([]);
+      setBulkReassign(null);
+    } catch (e) {
+      console.error('Error deleting category', e);
+      alert('Error al eliminar categoría');
+      setShowDeleteCatConfirm(false);
+      setDeletingCategory(null);
+      setAffectedProducts([]);
+      setBulkReassign(null);
+    }
   };
 
   const save = async () => {
@@ -139,9 +229,40 @@ const ProductEditorModal: React.FC<Props> = ({ open, onClose, product, onSaved }
               <input type="number" step="0.01" value={form.price} onChange={e => setForm({ ...form, price: Number(e.target.value) })} className="w-full px-3 py-2 border rounded-none" />
             </div>
             <div>
-              <label className="block text-sm text-gray-700 mb-1">Categoría</label>
-              <input value={form.category} onChange={e => setForm({ ...form, category: e.target.value })} className="w-full px-3 py-2 border rounded-none" />
+            <label className="block text-sm text-gray-700 mb-1">Categoría</label>
+            <div className="flex items-center gap-2">
+              <select value={form.category} onChange={(e) => {
+                const v = e.target.value;
+                if (v === '__add_new__') { setShowNewCategory(true); setNewCategory(''); } else {
+                  setForm(prev => ({ ...prev, category: v }));
+                }
+              }} className="px-3 py-2 border rounded-md">
+                <option value="">Seleccionar</option>
+                {categories.map(c => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
+                <option value="__add_new__">+ Agregar nueva...</option>
+              </select>
+
+              <button type="button" title="Agregar" onClick={() => { setShowNewCategory(true); setNewCategory(''); }} className="p-2 border rounded text-gray-600">
+                <Plus size={14} />
+              </button>
+
+              {form.category && form.category !== 'otros' && (
+                <button type="button" title="Eliminar categoría" onClick={() => { setDeletingCategory(form.category); setShowDeleteCatConfirm(true); }} className="p-2 border rounded text-gray-600">
+                  <Trash2 size={14} />
+                </button>
+              )}
             </div>
+
+            {showNewCategory && (
+              <div className="mt-2 flex items-center gap-2">
+                <input value={newCategory} onChange={e => setNewCategory(e.target.value)} className="px-3 py-2 border rounded-md flex-1" placeholder="Nueva categoría" />
+                <button type="button" onClick={addCategory} className="p-2 bg-primary text-white rounded"><Check size={14} /></button>
+                <button type="button" onClick={() => { setShowNewCategory(false); setNewCategory(''); }} className="p-2 border rounded text-gray-600"><X size={14} /></button>
+              </div>
+            )}
+          </div>
           </div>
 
           <div>
@@ -203,6 +324,70 @@ const ProductEditorModal: React.FC<Props> = ({ open, onClose, product, onSaved }
           <button onClick={save} disabled={saving} className="px-4 py-2 rounded-none bg-black text-white disabled:opacity-50">{saving ? 'Guardando...' : (form.id ? 'Actualizar Producto' : 'Crear Producto')}</button>
         </div>
       </div>
+
+      {showDeleteCatConfirm && (
+        <div className="fixed inset-0 z-60 flex items-center justify-center bg-black bg-opacity-40 p-4">
+          <div className="bg-white rounded-lg max-w-2xl w-full p-6 shadow-lg">
+            <div className="flex items-start justify-between mb-3">
+              <div>
+                <h3 className="text-lg font-semibold">Confirmar exclusão</h3>
+                <p className="text-sm text-gray-600">Você está prestes a excluir a categoria "{deletingCategory || form.category}".</p>
+              </div>
+              <div className="text-right">
+                <div className="text-sm text-gray-500">Produtos afetados</div>
+                <div className="text-xl font-bold">{loadingAffected ? '...' : affectedProducts.length}</div>
+              </div>
+            </div>
+
+            <div className="mb-4">
+              <label className="text-sm text-gray-600">Reasignar a todos:</label>
+              <div className="flex items-center gap-2 mt-2">
+                <select value={bulkReassign || ''} onChange={e => {
+                  const v = e.target.value || null;
+                  setBulkReassign(v);
+                  if (v !== null) setAffectedProducts(prev => prev.map(p => ({ ...p, newCategory: v })));
+                }} className="px-3 py-2 border rounded-md">
+                  <option value="">Otros (predeterminado)</option>
+                  {categories.map(c => <option key={c} value={c}>{c}</option>)}
+                </select>
+                <div className="text-sm text-gray-500">(Opcional)</div>
+              </div>
+            </div>
+
+            <div className="max-h-64 overflow-auto border rounded p-2 mb-4">
+              {loadingAffected && <div className="text-sm text-gray-500">Carregando produtos afetados...</div>}
+              {!loadingAffected && affectedProducts.length === 0 && <div className="text-sm text-gray-500">Não há produtos com esta categoria.</div>}
+              {!loadingAffected && affectedProducts.length > 0 && (
+                <ul className="space-y-2">
+                  {affectedProducts.map((p, idx) => (
+                    <li key={p.id} className="flex items-center justify-between gap-3 p-2 rounded hover:bg-gray-50">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center text-xs text-gray-600">{String(idx+1)}</div>
+                        <div>
+                          <div className="text-sm font-medium">{p.name}</div>
+                          <div className="text-xs text-gray-500">ID: {p.id}</div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <select value={p.newCategory} onChange={e => setAffectedProducts(prev => prev.map(pp => pp.id === p.id ? { ...pp, newCategory: e.target.value } : pp))} className="px-2 py-1 border rounded-md">
+                          <option value="otros">Otros</option>
+                          {categories.map(c => <option key={c} value={c}>{c}</option>)}
+                        </select>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
+            <div className="flex justify-end gap-3">
+              <button onClick={() => { setShowDeleteCatConfirm(false); setDeletingCategory(null); setAffectedProducts([]); setBulkReassign(null); }} className="px-4 py-2 border rounded">Cancelar</button>
+              <button onClick={handleDeleteCategory} className="px-4 py-2 bg-red-600 text-white rounded">Excluir e reatribuir</button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };

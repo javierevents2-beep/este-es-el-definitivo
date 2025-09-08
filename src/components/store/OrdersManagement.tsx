@@ -109,7 +109,7 @@ const OrdersManagement = () => {
       <div className="flex items-center justify-between">
         <h2 className="section-title">Gestión de Órdenes</h2>
         <div className="flex items-center gap-2">
-          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Buscar por cliente" className="px-3 py-2 border rounded-none" />
+          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Buscar por cliente" className="px-3 py-2 border rounded-full" />
         </div>
       </div>
 
@@ -131,7 +131,7 @@ const OrdersManagement = () => {
               : 'bg-black text-white border-black')
             : '';
           return (
-            <button key={s} onClick={() => setStatusFilter(s)} title={s} className={`px-3 py-2 rounded-none border-2 inline-flex items-center gap-2 ${active || color}`}>
+            <button key={s} onClick={() => setStatusFilter(s)} title={s} className={`px-3 py-2 rounded-full border-2 inline-flex items-center gap-2 ${active || color}`}>
               <Icon size={16} />
               <span className="text-xs px-1.5 py-0.5 border rounded">{count}</span>
             </button>
@@ -155,7 +155,7 @@ const OrdersManagement = () => {
           {filtered.map(o => (
             <div key={o.id} className="grid grid-cols-12 p-3 items-center">
               <div className="col-span-1">
-                <button onClick={() => setExpanded(e => ({ ...e, [o.id]: !e[o.id] }))} className="border-2 border-black text-black px-2 py-1 rounded-none hover:bg-black hover:text-white inline-flex items-center" title={expanded[o.id] ? 'Ocultar' : 'Ver detalles'}>
+                <button onClick={() => setExpanded(e => ({ ...e, [o.id]: !e[o.id] }))} className="border-2 border-black text-black px-2 py-1 rounded-full hover:bg-black hover:text-white inline-flex items-center" title={expanded[o.id] ? 'Ocultar' : 'Ver detalles'}>
                   {expanded[o.id] ? <ChevronUp size={14}/> : <ChevronDown size={14}/>}
                 </button>
               </div>
@@ -170,7 +170,7 @@ const OrdersManagement = () => {
                     const active = o.status===s ? (s==='pendiente' ? 'bg-red-600 text-white border-red-600' : s==='procesando' ? 'bg-yellow-500 text-black border-yellow-500' : 'bg-green-600 text-white border-green-600') : '';
                     const Icon = s==='pendiente' ? Clock : s==='procesando' ? Loader : CheckCircle;
                     return (
-                      <button key={s} onClick={() => updateStatus(o.id, s)} title={s} className={`px-2 py-1 text-xs border-2 rounded-none inline-flex items-center justify-center ${active || colorBase}`}>
+                      <button key={s} onClick={() => updateStatus(o.id, s)} title={s} className={`px-2 py-1 text-xs border-2 rounded-full inline-flex items-center justify-center ${active || colorBase}`}>
                         <Icon size={14} />
                       </button>
                     );
@@ -178,7 +178,7 @@ const OrdersManagement = () => {
                 </div>
               </div>
               <div className="col-span-1 text-right">
-                <button onClick={() => remove(o.id)} title="Eliminar" className="border-2 border-black text-black px-2 py-1 rounded-none hover:bg-black hover:text-white inline-flex items-center"><Trash2 size={14}/></button>
+                <button onClick={() => remove(o.id)} title="Eliminar" className="border-2 border-black text-black px-2 py-1 rounded-full hover:bg-black hover:text-white inline-flex items-center"><Trash2 size={14}/></button>
               </div>
               {expanded[o.id] && (
                 <div className="col-span-12 mt-3">

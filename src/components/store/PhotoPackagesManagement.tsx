@@ -19,6 +19,7 @@ const PhotoPackagesManagement = () => {
   const [error, setError] = useState<string | null>(null);
   const [editorOpen, setEditorOpen] = useState(false);
   const [editing, setEditing] = useState<DBPackage | null>(null);
+  const [selectedSections, setSelectedSections] = useState<Record<string, string>>({});
 
   const grouped = useMemo(() => {
     return {
@@ -76,6 +77,30 @@ const PhotoPackagesManagement = () => {
     const newActive = !(p as any).active;
     await updatePackage(p.id, { /* @ts-expect-error */ active: newActive });
     await load();
+  };
+
+  const handleAddSection = async (p: DBPackage) => {
+    const name = prompt('Nombre de la sección:');
+    if (!name) return;
+    const current = Array.isArray((p as any).sections) ? (p as any).sections.slice() : [];
+    current.push(name);
+    await updatePackage(p.id, { sections: current });
+    await load();
+    setSelectedSections(s => ({ ...s, [p.id]: name }));
+  };
+
+  const handleRemoveSection = async (p: DBPackage) => {
+    const sel = selectedSections[p.id];
+    if (!sel) { alert('Selecciona una sección para eliminar'); return; }
+    if (!confirm(`Eliminar la sección "${sel}"?`)) return;
+    const current = Array.isArray((p as any).sections) ? (p as any).sections.filter((x: string) => x !== sel) : [];
+    await updatePackage(p.id, { sections: current });
+    await load();
+    setSelectedSections(s => ({ ...s, [p.id]: current[0] || '' }));
+  };
+
+  const handleSelectSection = (pkgId: string, value: string) => {
+    setSelectedSections(s => ({ ...s, [pkgId]: value }));
   };
 
   const handleDelete = async (p: DBPackage) => {
@@ -152,28 +177,6 @@ const PhotoPackagesManagement = () => {
       <div className="flex justify-between items-center mb-6">
         <h2 className="section-title">Gestión de Paquetes</h2>
         <div className="flex items-center gap-2">
-          <button onClick={load} className="px-4 py-2 border-2 border-black text-black rounded-none hover:bg-black hover:text-white flex items-center gap-2"><RefreshCcw size={16}/>Recargar</button>
-          <button onClick={async () => {
-            if (!confirm('Eliminar paquetes duplicados por (tipo + título + precio + duración)?')) return;
-            const snap = await getDocs(collection(db, 'packages'));
-            const all = snap.docs.map(d => ({ id: d.id, ...(d.data() as any) })) as DBPackage[];
-            const seen = new Map<string, string>();
-            const toDelete: string[] = [];
-            for (const p of all) {
-              const key = `${p.type}|${String(p.title||'').trim().toLowerCase()}|${Number(p.price)||0}|${String(p.duration||'').trim().toLowerCase()}`;
-              if (seen.has(key)) {
-                toDelete.push(p.id);
-              } else {
-                seen.set(key, p.id);
-              }
-            }
-            if (toDelete.length) {
-              await Promise.all(toDelete.map(id => deleteDoc(doc(db, 'packages', id))));
-              await load();
-            }
-            alert(`Eliminados ${toDelete.length} duplicados`);
-          }} className="px-4 py-2 border-2 border-black text-black rounded-none hover:bg-black hover:text-white">Eliminar Duplicados</button>
-          <button onClick={handleImportFromData} className="px-4 py-2 border-2 border-black text-black rounded-none hover:bg-black hover:text-white">Importar de Datos</button>
           <button onClick={handleCreate} className="px-4 py-2 border-2 border-black text-black rounded-none hover:bg-black hover:text-white flex items-center gap-2"><Plus size={16}/>Nuevo</button>
         </div>
       </div>
@@ -188,7 +191,7 @@ const PhotoPackagesManagement = () => {
             {grouped[type].map((p) => (
               <div key={p.id} className="bg-white rounded-xl border border-gray-200 overflow-hidden">
                 <div className="relative">
-                  <img src={p.image_url} alt={p.title} className="w-full h-44 object-cover" />
+                  <img loading="lazy" src={p.image_url} alt={p.title} className="w-full h-44 object-cover" data-pkg-id={p.id} />
                   {(p as any).active === false && (
                     <span className="absolute top-2 left-2 text-xs px-2 py-1 rounded bg-gray-200 text-gray-700">inactivo</span>
                   )}
@@ -199,6 +202,22 @@ const PhotoPackagesManagement = () => {
                     <span className="text-primary font-bold">R$ {Number(p.price).toFixed(0)}</span>
                   </div>
                   <p className="text-gray-600 text-sm mt-1 line-clamp-2">{p.description}</p>
+
+                  {/* Sections selector */}
+                  <div className="mt-4 flex items-center gap-2">
+                    <select
+                      value={selectedSections[p.id] || ((p as any).sections && (p as any).sections[0]) || ''}
+                      onChange={(e) => handleSelectSection(p.id, e.target.value)}
+                      className="border px-3 py-2 text-sm rounded w-full">
+                      <option value="">Sin secciones</option>
+                      {Array.isArray((p as any).sections) && (p as any).sections.map((s: string) => (
+                        <option key={s} value={s}>{s}</option>
+                      ))}
+                    </select>
+                    <button onClick={() => handleAddSection(p)} className="px-3 py-2 border-2 border-black text-black rounded-none hover:bg-black hover:text-white flex items-center gap-2"><Plus size={14}/>Agregar</button>
+                    <button onClick={() => handleRemoveSection(p)} className="px-3 py-2 border-2 border-black text-black rounded-none hover:bg-black hover:text-white flex items-center gap-2"><Trash2 size={14}/>Eliminar</button>
+                  </div>
+
                   <div className="mt-4 flex items-center gap-2">
                     <button onClick={() => { setEditing(p); setEditorOpen(true); }} className="flex-1 border-2 border-black text-black px-3 py-2 rounded-none hover:bg-black hover:text-white flex items-center gap-2"><Edit size={14}/>Editar</button>
                     <button onClick={() => handleToggle(p)} className={`flex-1 border-2 border-black px-3 py-2 rounded-none flex items-center justify-center gap-2 ${

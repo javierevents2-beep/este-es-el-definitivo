@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Product } from '../types/store';
 import { db } from '../utils/firebaseClient';
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, orderBy, query } from 'firebase/firestore';
-import { Plus, Trash2, Eye, EyeOff } from 'lucide-react';
+import { Plus, Trash2 } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
 import ProductEditorModal from '../components/store/ProductEditorModal';
 import AdminStoreDashboard from '../components/store/AdminStoreDashboard';
@@ -30,6 +30,13 @@ const StorePage = () => {
 
 
   useEffect(() => {
+    const handler = (e: Event | any) => {
+      const val = e?.detail ?? (localStorage.getItem('site_admin_mode') ? true : false);
+      setIsAdmin(Boolean(val));
+    };
+    window.addEventListener('siteAdminModeChanged', handler as EventListener);
+    window.addEventListener('storage', handler as EventListener);
+
     const seedIfEmpty = async () => {
       if (typeof navigator !== 'undefined' && !navigator.onLine) return;
       if (products.length === 0 && !localStorage.getItem('seeded_products')) {
@@ -57,6 +64,11 @@ const StorePage = () => {
       }
     };
     seedIfEmpty();
+    // cleanup
+    return () => {
+      window.removeEventListener('siteAdminModeChanged', handler as EventListener);
+      window.removeEventListener('storage', handler as EventListener);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [products.length]);
 
@@ -66,6 +78,8 @@ const StorePage = () => {
       if (adminPassword === '1234') {
         setIsAdmin(true);
         setAdminView('dashboard');
+        try { localStorage.setItem('site_admin_mode', '1'); } catch (_) {}
+        window.dispatchEvent(new CustomEvent('siteAdminModeChanged', { detail: true }));
       } else if (adminPassword !== null) {
         alert('Senha incorreta');
       }
@@ -74,6 +88,8 @@ const StorePage = () => {
       setEditingProduct(null);
       setEditorOpen(false);
       setAdminView('dashboard');
+      try { localStorage.removeItem('site_admin_mode'); } catch (_) {}
+      window.dispatchEvent(new CustomEvent('siteAdminModeChanged', { detail: false }));
     }
   };
 
@@ -199,15 +215,7 @@ const StorePage = () => {
       <div className="container-custom">
         <div className="flex justify-between items-center mb-8">
           <h1 className="section-title">Tienda</h1>
-          <div className="flex items-center gap-4">
-            <button
-              onClick={toggleAdminMode}
-              className={`p-2 rounded-full ${isAdmin ? 'bg-red-100 text-red-600' : 'bg-gray-100 text-gray-600'} hover:bg-opacity-80`}
-              title={isAdmin ? 'Sair do modo admin' : 'Modo administrador'}
-            >
-              {isAdmin ? <EyeOff size={20} /> : <Eye size={20} />}
-            </button>
-          </div>
+          <div className="flex items-center gap-4" />
         </div>
 
         {/* Admin dashboard + products */}
@@ -253,7 +261,7 @@ const StorePage = () => {
                   {products.map(product => (
                     <div key={product.id} className="bg-white rounded-xl border border-gray-200 overflow-hidden h-full flex flex-col">
                       <div className="relative">
-                        <img src={product.image_url} alt={product.name} className="w-full h-44 object-cover" />
+                        <img loading="lazy" src={product.image_url} alt={product.name} className="w-full h-44 object-cover" />
                         {(product as any).active === false && (
                           <span className="absolute top-2 left-2 text-xs px-2 py-1 rounded bg-gray-200 text-gray-700">inactivo</span>
                         )}
@@ -336,7 +344,7 @@ const StorePage = () => {
                     {products.map(product => (
                       <div key={product.id} className="bg-white rounded-xl border border-gray-200 overflow-hidden h-full flex flex-col">
                         <div className="relative">
-                          <img src={product.image_url} alt={product.name} className="w-full h-44 object-cover" />
+                          <img loading="lazy" src={product.image_url} alt={product.name} className="w-full h-44 object-cover" />
                           {(product as any).active === false && (
                             <span className="absolute top-2 left-2 text-xs px-2 py-1 rounded bg-gray-200 text-gray-700">inactivo</span>
                           )}

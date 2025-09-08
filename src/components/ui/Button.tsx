@@ -23,7 +23,8 @@ const PATH_TO_KEY: Record<string, keyof import('../../contexts/FeatureFlagsConte
   '/store': 'store',
   '/admin': 'admin',
   '/dashboard': 'clientDashboard',
-  '/packages-admin': 'packagesAdmin'
+  '/packages-admin': 'packagesAdmin',
+  '/admin-store': 'admin'
 };
 
 export const Button = ({

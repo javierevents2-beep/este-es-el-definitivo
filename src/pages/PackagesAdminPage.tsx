@@ -17,14 +17,27 @@ const PackagesAdminPage = () => {
   const [packages, setPackages] = useState<DBPackage[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedType, setSelectedType] = useState<'all' | 'portrait' | 'maternity' | 'events'>('all');
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [isAdmin, setIsAdmin] = useState<boolean>(Boolean(typeof window !== 'undefined' && localStorage.getItem('site_admin_mode')));
   const [showAdminPanel, setShowAdminPanel] = useState(false);
   const [editing, setEditing] = useState<DBPackage | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
   const [draft, setDraft] = useState<typeof defaultNew>(defaultNew);
 
   useEffect(() => {
+    const handler = (e: Event | any) => {
+      const val = e?.detail ?? (localStorage.getItem('site_admin_mode') ? true : false);
+      setIsAdmin(Boolean(val));
+      if (val) setShowAdminPanel(true); else setShowAdminPanel(false);
+    };
+    window.addEventListener('siteAdminModeChanged', handler as EventListener);
+    window.addEventListener('storage', handler as EventListener);
+
     load();
+
+    return () => {
+      window.removeEventListener('siteAdminModeChanged', handler as EventListener);
+      window.removeEventListener('storage', handler as EventListener);
+    };
   }, []);
 
   const load = async () => {
@@ -50,6 +63,8 @@ const PackagesAdminPage = () => {
       if (pass === '1234') {
         setIsAdmin(true);
         setShowAdminPanel(true);
+        try { localStorage.setItem('site_admin_mode', '1'); } catch (_) {}
+        window.dispatchEvent(new CustomEvent('siteAdminModeChanged', { detail: true }));
       } else if (pass !== null) {
         alert('Senha incorreta');
       }
@@ -58,6 +73,8 @@ const PackagesAdminPage = () => {
       setShowAdminPanel(false);
       setEditing(null);
       setShowAddForm(false);
+      try { localStorage.removeItem('site_admin_mode'); } catch (_) {}
+      window.dispatchEvent(new CustomEvent('siteAdminModeChanged', { detail: false }));
     }
   };
 
@@ -200,7 +217,7 @@ const PackagesAdminPage = () => {
                   </div>
                 )}
                 <div className="relative">
-                  <img src={p.image_url} alt={p.title} className="w-full h-48 object-cover" />
+                  <img loading="lazy" src={p.image_url} alt={p.title} className="w-full h-48 object-cover" />
                   {p.category && (
                     <div className="absolute top-2 left-2 bg-black/70 text-white px-2 py-1 rounded text-xs">{p.category}</div>
                   )}

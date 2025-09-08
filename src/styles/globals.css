@@ -43,9 +43,22 @@
   }
 
   .btn-primary {
-    @apply bg-primary text-white py-3 px-6 transition-all duration-300 
-           hover:bg-opacity-90 active:bg-opacity-80 inline-block text-center text-sm uppercase tracking-wider font-medium
-           cursor-pointer select-none;
+    @apply bg-white text-black border-2 border-black py-3 px-6 transition-all duration-300 shadow-sm
+           inline-block text-center text-sm uppercase tracking-wider font-medium cursor-pointer select-none;
+  }
+  .btn-primary:hover {
+    @apply bg-primary text-white border-black shadow-md;
+  }
+  .btn-primary:focus-visible {
+    @apply outline-none ring-2 ring-secondary/50;
+  }
+
+  /* Specific hero CTA override (only used in hero) */
+  .hero-cta-black {
+    @apply bg-primary text-white border-none;
+  }
+  .hero-cta-black:hover {
+    @apply bg-primary/90 text-white;
   }
 
   .btn-secondary {

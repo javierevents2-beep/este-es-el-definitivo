@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { X } from 'lucide-react';
+import { X, Plus, Trash2 } from 'lucide-react';
 import { DBPackage, updatePackage } from '../../utils/packagesService';
 
 interface PackageEditorModalProps {
@@ -17,6 +17,10 @@ const PackageEditorModal: React.FC<PackageEditorModalProps> = ({ open, onClose, 
   const [featuresText, setFeaturesText] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [category, setCategory] = useState<string | undefined>('');
+  const [sections, setSections] = useState<string[]>([]);
+  const [showNewSection, setShowNewSection] = useState(false);
+  const [newSection, setNewSection] = useState('');
+  const [selectedSection, setSelectedSection] = useState<string | undefined>('');
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -29,6 +33,10 @@ const PackageEditorModal: React.FC<PackageEditorModalProps> = ({ open, onClose, 
     setFeaturesText((pkg.features || []).join('\n'));
     setImageUrl(pkg.image_url || '');
     setCategory(pkg.category || '');
+    // load sections if present
+    const s = Array.isArray((pkg as any).sections) ? (pkg as any).sections.slice() : [];
+    setSections(s);
+    setSelectedSection(s[0] || '');
   }, [pkg]);
 
   const handleSave = async () => {
@@ -48,8 +56,10 @@ const PackageEditorModal: React.FC<PackageEditorModalProps> = ({ open, onClose, 
         image_url: imageUrl,
         category: category || undefined,
       } as Partial<DBPackage>;
+      // include sections
+      (updates as any).sections = sections;
       await updatePackage(pkg.id, updates);
-      const updated: DBPackage = { ...pkg, ...updates } as DBPackage;
+      const updated: DBPackage = { ...pkg, ...updates, sections } as DBPackage;
       onSaved && onSaved(updated);
       onClose();
     } catch (e: any) {
@@ -110,6 +120,45 @@ const PackageEditorModal: React.FC<PackageEditorModalProps> = ({ open, onClose, 
           <div>
             <label className="block text-sm text-gray-700 mb-1">Categoria (opcional)</label>
             <input value={category || ''} onChange={e => setCategory(e.target.value)} className="w-full px-3 py-2 border rounded" />
+          </div>
+
+          {/* Sections selector and management */}
+          <div>
+            <label className="block text-sm text-gray-700 mb-1">Sección</label>
+            <div className="flex items-center gap-2">
+              <select value={selectedSection || ''} onChange={e => setSelectedSection(e.target.value)} className="px-3 py-2 border rounded flex-1">
+                <option value="">Sin sección</option>
+                {sections.map(s => <option key={s} value={s}>{s}</option>)}
+              </select>
+
+              <button type="button" title="Agregar" onClick={() => { setShowNewSection(true); setNewSection(''); }} className="p-2 border rounded text-gray-600">
+                <Plus size={14} />
+              </button>
+              <button type="button" title="Eliminar sección" onClick={() => {
+                if (!selectedSection) return alert('Selecciona una sección para eliminar');
+                if (!confirm(`Eliminar la sección "${selectedSection}"?`)) return;
+                setSections(prev => prev.filter(x => x !== selectedSection));
+                setSelectedSection(prev => {
+                  const rem = sections.filter(x => x !== (prev || ''));
+                  return rem[0] || '';
+                });
+              }} className="p-2 border rounded text-gray-600"><Trash2 size={14} /></button>
+            </div>
+
+            {showNewSection && (
+              <div className="mt-2 flex items-center gap-2">
+                <input value={newSection} onChange={e => setNewSection(e.target.value)} className="px-3 py-2 border rounded-md flex-1" placeholder="Nueva sección" />
+                <button type="button" onClick={() => {
+                  const v = (newSection || '').trim();
+                  if (!v) return;
+                  if (!sections.includes(v)) setSections(prev => [...prev, v]);
+                  setSelectedSection(v);
+                  setShowNewSection(false);
+                  setNewSection('');
+                }} className="p-2 bg-primary text-white rounded"><Plus size={14} /></button>
+                <button type="button" onClick={() => { setShowNewSection(false); setNewSection(''); }} className="p-2 border rounded text-gray-600"><X size={14} /></button>
+              </div>
+            )}
           </div>
         </div>
 
