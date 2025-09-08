@@ -198,7 +198,7 @@ const AdminStoreDashboard: React.FC<AdminProps> = ({ onNavigate }) => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Quick Actions */}
         <div className="bg-white rounded-xl border border-gray-200 p-4">
-          <h3 className="font-medium mb-4">Acciones Rápidas</h3>
+          <h3 className="font-medium mb-4">Ações Rápidas</h3>
           <div className="space-y-3">
             <button onClick={() => onNavigate?.('orders')} className="w-full border-2 border-black text-black px-4 py-3 rounded-none hover:bg-black hover:text-white flex items-center justify-center gap-2">
               Ver Órdenes
