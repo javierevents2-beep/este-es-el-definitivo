@@ -136,7 +136,7 @@ const PortraitPage = () => {
                   </button>
                 )}
                 <div className="h-56 overflow-hidden mb-4">
-                  <img
+                  <img loading="lazy"
                     src={pkg.image}
                     alt={pkg.title}
                     className="w-full h-full object-cover"
