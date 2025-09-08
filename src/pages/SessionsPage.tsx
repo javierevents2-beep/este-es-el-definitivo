@@ -94,7 +94,7 @@ const SessionsPage = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {filteredImages.map((image) => (
               <div key={image.id} className="gallery-item">
-                <img 
+                <img loading="lazy"
                   src={image.src} 
                   alt={image.alt} 
                   className="w-full h-80 object-cover"
