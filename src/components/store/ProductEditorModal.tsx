@@ -321,8 +321,8 @@ const ProductEditorModal: React.FC<Props> = ({ open, onClose, product, onSaved }
           <div className="bg-white rounded-lg max-w-2xl w-full p-6 shadow-lg">
             <div className="flex items-start justify-between mb-3">
               <div>
-                <h3 className="text-lg font-semibold">Confirmar eliminación</h3>
-                <p className="text-sm text-gray-600">Estás a punto de eliminar la categoría "{deletingCategory || form.category}".</p>
+                <h3 className="text-lg font-semibold">Confirmar exclusão</h3>
+                <p className="text-sm text-gray-600">Você está prestes a excluir a categoria "{deletingCategory || form.category}".</p>
               </div>
               <div className="text-right">
                 <div className="text-sm text-gray-500">Afectados</div>
