@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { X } from 'lucide-react';
+import { X, Plus, Trash2 } from 'lucide-react';
 import { DBPackage, updatePackage } from '../../utils/packagesService';
 
 interface PackageEditorModalProps {
