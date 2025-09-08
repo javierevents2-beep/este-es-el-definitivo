@@ -16,6 +16,7 @@ import AdminPage from './pages/AdminPage';
 import BookingPage from './pages/BookingPage';
 import ClientDashboardPage from './pages/ClientDashboardPage';
 import PackagesAdminPage from './pages/PackagesAdminPage';
+import AdminStorePage from './pages/AdminStorePage';
 import './styles/globals.css';
 
 function App() {
