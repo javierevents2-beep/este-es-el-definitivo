@@ -5,14 +5,19 @@ import { Camera, Users, Baby } from 'lucide-react';
 import Button from '../components/ui/Button';
 import { useTranslation } from 'react-i18next';
 import { useFeatureFlags } from '../contexts/FeatureFlagsContext';
+import { useAuth } from '../contexts/AuthContext';
 
 const HomePage = () => {
   const { t } = useTranslation();
   const { flags } = useFeatureFlags();
+  const { user } = useAuth();
+
+  const isAdmin = !!user && user.email === 'javierevents2@gmail.com';
 
   return (
     <>
       <Hero />
+
       <section className="py-20 bg-accent/10">
         <div className="container-custom">
           <div className="text-center max-w-3xl mx-auto">
@@ -102,6 +107,14 @@ const HomePage = () => {
 
       <Testimonials />
       <CTA />
+
+      {isAdmin && (
+        <div className="fixed bottom-6 right-6 z-50">
+          <Button to="/admin" variant="secondary" className="px-4 py-2">
+            {t('admin.title')}
+          </Button>
+        </div>
+      )}
     </>
   );
 }
