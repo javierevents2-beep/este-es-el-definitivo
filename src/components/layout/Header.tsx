@@ -118,15 +118,6 @@ const Header = () => {
       }`}
     >
       <div className="container-custom flex justify-between items-center">
-        {flags.pages.home ? (
-          <Link to="/" className="z-50">
-            <Logo dark={!(isScrolled || !isHomePage)} />
-          </Link>
-        ) : (
-          <div className="z-50">
-            <Logo dark={!(isScrolled || !isHomePage)} />
-          </div>
-        )}
 
         {/* Desktop: split navigation into left / center logo / right */}
         <div className="container-custom px-0 flex justify-between items-center md:grid md:grid-cols-3">
