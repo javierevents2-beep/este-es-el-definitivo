@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Product } from '../types/store';
 import { db } from '../utils/firebaseClient';
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, orderBy, query } from 'firebase/firestore';
-import { Plus, Trash2, Eye, EyeOff } from 'lucide-react';
+import { Plus, Trash2 } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
 import ProductEditorModal from '../components/store/ProductEditorModal';
 import AdminStoreDashboard from '../components/store/AdminStoreDashboard';
