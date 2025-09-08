@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Eye } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Menu, X, Eye, EyeOff } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import Logo from '../ui/Logo';
 import CartIcon from '../cart/CartIcon';
