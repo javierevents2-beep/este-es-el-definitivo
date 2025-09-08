@@ -53,6 +53,12 @@ const Header = () => {
   const submitAdminModal = () => {
     if (!adminModalKey) { setAdminModalError('Insira a senha'); return; }
     if (adminModalKey === '1234') {
+      try {
+        // Sign in anonymously so storage rules that require auth will allow uploads
+        await signInAnonymously(auth);
+      } catch (e) {
+        console.error('Anonymous sign-in failed', e);
+      }
       notifyAdminChange(true);
       setShowAdminModal(false);
       setAdminModalKey('');
