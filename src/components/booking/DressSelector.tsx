@@ -44,8 +44,8 @@ const DressSelector = ({ dresses, maxSelections, selectedDresses, onChange }: Dr
             onClick={() => handleDressSelection(dress.id)}
           >
             <div className="aspect-square overflow-hidden rounded-lg">
-              <img 
-                src={dress.image} 
+              <img loading="lazy"
+                src={dress.image}
                 alt={dress.name}
                 className="w-full h-full object-cover"
               />
