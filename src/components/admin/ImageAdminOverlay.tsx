@@ -1,4 +1,4 @@
-import { storage } from '../../utils/firebaseClient';
+import { storage, auth } from '../../utils/firebaseClient';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { updatePackage } from '../../utils/packagesService';
 
