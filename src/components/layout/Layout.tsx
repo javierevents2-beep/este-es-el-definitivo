@@ -16,7 +16,7 @@ const Layout = ({ children }: LayoutProps) => {
     setTimeout(() => {
       setMounted(true);
     }, 1000);
-    
+
     // Add intersection observer for fade-in animations
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -36,6 +36,27 @@ const Layout = ({ children }: LayoutProps) => {
       fadeElements.forEach(element => {
         observer.unobserve(element);
       });
+    };
+  }, []);
+
+  // Admin image overlay: enable when site_admin_mode is set
+  useEffect(() => {
+    const handler = (e: any) => {
+      const val = e?.detail ?? (localStorage.getItem('site_admin_mode') ? true : false);
+      if (val) {
+        ImageAdminOverlay.initImageAdminOverlay();
+      } else {
+        ImageAdminOverlay.destroyImageAdminOverlay();
+      }
+    };
+    window.addEventListener('siteAdminModeChanged', handler as EventListener);
+    // run once based on current value
+    if (typeof window !== 'undefined' && localStorage.getItem('site_admin_mode')) {
+      ImageAdminOverlay.initImageAdminOverlay();
+    }
+    return () => {
+      window.removeEventListener('siteAdminModeChanged', handler as EventListener);
+      ImageAdminOverlay.destroyImageAdminOverlay();
     };
   }, []);
 
