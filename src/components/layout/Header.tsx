@@ -102,8 +102,8 @@ const Header = () => {
       { name: t('nav.store'), path: '/store', key: 'store' },
       { name: t('nav.book'), action: handleBooking, key: 'booking' },
       { name: t('nav.contact'), path: '/contact', key: 'contact' },
-      { name: 'Admin', path: '/admin-store', key: 'admin' },
     ];
+    // do not include a separate Admin link here; admin is toggled via the eye icon
     return links.filter(l => !l.key || flags.pages[l.key as keyof typeof flags.pages]);
   }, [t, flags]);
 
@@ -130,14 +130,7 @@ const Header = () => {
               </li>
               {navLinks.slice(0, Math.ceil(navLinks.length / 2)).map((link) => (
                 <li key={link.name}>
-                  {link.key === 'admin' ? (
-                    <button
-                      onClick={toggleAdminFromHeader}
-                      className="font-lato text-sm tracking-wide uppercase text-white hover:text-secondary transition-colors"
-                    >
-                      {link.name}
-                    </button>
-                  ) : link.path ? (
+                  {link.path ? (
                     <Link
                       to={link.path}
                       className="font-lato text-sm tracking-wide uppercase text-white hover:text-secondary transition-colors"
@@ -167,14 +160,7 @@ const Header = () => {
             <ul className="flex space-x-8">
               {navLinks.slice(Math.ceil(navLinks.length / 2)).map((link) => (
                 <li key={link.name}>
-                  {link.key === 'admin' ? (
-                    <button
-                      onClick={toggleAdminFromHeader}
-                      className="font-lato text-sm tracking-wide uppercase text-white hover:text-secondary transition-colors"
-                    >
-                      {link.name}
-                    </button>
-                  ) : link.path ? (
+                  {link.path ? (
                     <Link
                       to={link.path}
                       className="font-lato text-sm tracking-wide uppercase text-white hover:text-secondary transition-colors"
@@ -247,13 +233,6 @@ const Header = () => {
               ))}
 
             </ul>
-            <div className="mt-auto pb-10">
-              <div className="mt-6 flex justify-center">
-                <button onClick={toggleAdminFromHeader} aria-label="Admin" title={isAdmin ? 'Sair do modo admin' : 'Modo administrador'}>
-                  {isAdmin ? <EyeOff size={24} className="text-primary" aria-hidden="true" /> : <Eye size={24} className="text-primary" aria-hidden="true" />}
-                </button>
-              </div>
-            </div>
           </div>
         </div>
       </div>
