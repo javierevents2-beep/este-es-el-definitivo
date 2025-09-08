@@ -27,7 +27,7 @@ const PackagesAdminPage = () => {
     const handler = (e: Event | any) => {
       const val = e?.detail ?? (localStorage.getItem('site_admin_mode') ? true : false);
       setIsAdmin(Boolean(val));
-      if (!val) setShowAdminPanel(false);
+      if (val) setShowAdminPanel(true); else setShowAdminPanel(false);
     };
     window.addEventListener('siteAdminModeChanged', handler as EventListener);
     window.addEventListener('storage', handler as EventListener);
