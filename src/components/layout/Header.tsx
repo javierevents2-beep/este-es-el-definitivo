@@ -32,10 +32,17 @@ const Header = () => {
     };
   }, []);
 
-  const notifyAdminChange = (val: boolean) => {
+  const notifyAdminChange = async (val: boolean) => {
     try {
       if (val) localStorage.setItem('site_admin_mode', '1'); else localStorage.removeItem('site_admin_mode');
     } catch (_) {}
+    if (!val) {
+      try {
+        await firebaseSignOut(auth);
+      } catch (e) {
+        console.error('Error signing out', e);
+      }
+    }
     window.dispatchEvent(new CustomEvent('siteAdminModeChanged', { detail: val }));
     setIsAdmin(val);
   };
