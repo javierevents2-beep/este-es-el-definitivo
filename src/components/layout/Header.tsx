@@ -96,8 +96,14 @@ const Header = () => {
 
   const { flags } = useFeatureFlags();
   const navLinks = useMemo(() => {
+    const scrollToServices = () => {
+      const el = document.getElementById('nossos-servicos');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+
     const links: { name: string; path?: string; action?: () => void; key?: string }[] = [
       { name: t('nav.home'), path: '/', key: 'home' },
+      { name: 'Serviços', action: scrollToServices, key: 'services' },
       { name: t('nav.portfolio'), path: '/portfolio', key: 'portfolio' },
       { name: t('nav.store'), path: '/store', key: 'store' },
       { name: t('nav.book'), action: handleBooking, key: 'booking' },
