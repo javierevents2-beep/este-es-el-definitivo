@@ -109,11 +109,11 @@ const Testimonials = () => {
   };
 
   const nextTestimonial = () => {
-    setActiveIndex((prev) => (prev + 1) % testimonials.length);
+    setActiveIndex((prev) => (prev + 1) % (reviews.length || 1));
   };
 
   const prevTestimonial = () => {
-    setActiveIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
+    setActiveIndex((prev) => (prev - 1 + (reviews.length || 1)) % (reviews.length || 1));
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
