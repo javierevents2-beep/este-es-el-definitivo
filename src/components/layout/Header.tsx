@@ -102,7 +102,7 @@ const Header = () => {
       { name: t('nav.store'), path: '/store', key: 'store' },
       { name: t('nav.book'), action: handleBooking, key: 'booking' },
       { name: t('nav.contact'), path: '/contact', key: 'contact' },
-      { name: 'Admin', path: '/packages-admin', key: 'admin' },
+      { name: 'Admin', path: '/admin-store', key: 'admin' },
     ];
     return links.filter(l => !l.key || flags.pages[l.key as keyof typeof flags.pages]);
   }, [t, flags]);
