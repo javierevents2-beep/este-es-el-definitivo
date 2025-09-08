@@ -19,6 +19,7 @@ const PhotoPackagesManagement = () => {
   const [error, setError] = useState<string | null>(null);
   const [editorOpen, setEditorOpen] = useState(false);
   const [editing, setEditing] = useState<DBPackage | null>(null);
+  const [selectedSections, setSelectedSections] = useState<Record<string, string>>({});
 
   const grouped = useMemo(() => {
     return {
@@ -76,6 +77,30 @@ const PhotoPackagesManagement = () => {
     const newActive = !(p as any).active;
     await updatePackage(p.id, { /* @ts-expect-error */ active: newActive });
     await load();
+  };
+
+  const handleAddSection = async (p: DBPackage) => {
+    const name = prompt('Nombre de la sección:');
+    if (!name) return;
+    const current = Array.isArray((p as any).sections) ? (p as any).sections.slice() : [];
+    current.push(name);
+    await updatePackage(p.id, { sections: current });
+    await load();
+    setSelectedSections(s => ({ ...s, [p.id]: name }));
+  };
+
+  const handleRemoveSection = async (p: DBPackage) => {
+    const sel = selectedSections[p.id];
+    if (!sel) { alert('Selecciona una sección para eliminar'); return; }
+    if (!confirm(`Eliminar la sección "${sel}"?`)) return;
+    const current = Array.isArray((p as any).sections) ? (p as any).sections.filter((x: string) => x !== sel) : [];
+    await updatePackage(p.id, { sections: current });
+    await load();
+    setSelectedSections(s => ({ ...s, [p.id]: current[0] || '' }));
+  };
+
+  const handleSelectSection = (pkgId: string, value: string) => {
+    setSelectedSections(s => ({ ...s, [pkgId]: value }));
   };
 
   const handleDelete = async (p: DBPackage) => {
@@ -177,6 +202,22 @@ const PhotoPackagesManagement = () => {
                     <span className="text-primary font-bold">R$ {Number(p.price).toFixed(0)}</span>
                   </div>
                   <p className="text-gray-600 text-sm mt-1 line-clamp-2">{p.description}</p>
+
+                  {/* Sections selector */}
+                  <div className="mt-4 flex items-center gap-2">
+                    <select
+                      value={selectedSections[p.id] || ((p as any).sections && (p as any).sections[0]) || ''}
+                      onChange={(e) => handleSelectSection(p.id, e.target.value)}
+                      className="border px-3 py-2 text-sm rounded w-full">
+                      <option value="">Sin secciones</option>
+                      {Array.isArray((p as any).sections) && (p as any).sections.map((s: string) => (
+                        <option key={s} value={s}>{s}</option>
+                      ))}
+                    </select>
+                    <button onClick={() => handleAddSection(p)} className="px-3 py-2 border-2 border-black text-black rounded-none hover:bg-black hover:text-white flex items-center gap-2"><Plus size={14}/>Agregar</button>
+                    <button onClick={() => handleRemoveSection(p)} className="px-3 py-2 border-2 border-black text-black rounded-none hover:bg-black hover:text-white flex items-center gap-2"><Trash2 size={14}/>Eliminar</button>
+                  </div>
+
                   <div className="mt-4 flex items-center gap-2">
                     <button onClick={() => { setEditing(p); setEditorOpen(true); }} className="flex-1 border-2 border-black text-black px-3 py-2 rounded-none hover:bg-black hover:text-white flex items-center gap-2"><Edit size={14}/>Editar</button>
                     <button onClick={() => handleToggle(p)} className={`flex-1 border-2 border-black px-3 py-2 rounded-none flex items-center justify-center gap-2 ${
