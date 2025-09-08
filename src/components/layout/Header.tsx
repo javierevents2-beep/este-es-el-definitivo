@@ -129,7 +129,7 @@ const Header = () => {
         )}
 
         {/* Desktop: split navigation into left / center logo / right */}
-        <div className="container-custom flex justify-between items-center md:grid md:grid-cols-3">
+        <div className="container-custom px-0 flex justify-between items-center md:grid md:grid-cols-3">
           <div className="hidden md:flex items-center">
             <ul className="flex space-x-8">
               {navLinks.slice(0, Math.ceil(navLinks.length / 2)).map((link) => (
