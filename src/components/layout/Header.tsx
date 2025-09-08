@@ -98,7 +98,13 @@ const Header = () => {
   const navLinks = useMemo(() => {
     const scrollToServices = () => {
       const el = document.getElementById('nossos-servicos');
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (!el) return;
+      const header = document.querySelector('header');
+      const headerHeight = header ? (header as HTMLElement).offsetHeight : 0;
+      const rect = el.getBoundingClientRect();
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const target = rect.top + scrollTop - headerHeight - 16; // small spacing
+      window.scrollTo({ top: target, behavior: 'smooth' });
     };
 
     const links: { name: string; path?: string; action?: () => void; key?: string }[] = [
