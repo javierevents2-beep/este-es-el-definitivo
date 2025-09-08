@@ -134,7 +134,7 @@ const Testimonials = () => {
         </div>
 
         <div className="relative max-w-4xl mx-auto px-4">
-          <div className="overflow-hidden" onMouseEnter={() => { setIsHovering(true); stopAutoplay(); }} onMouseLeave={() => { setIsHovering(false); autoplayRef.current = window.setInterval(() => setActiveIndex(prev => (prev + 1) % testimonials.length), 4000); }} onMouseMove={handleMouseMove}>
+          <div className="overflow-hidden" onMouseEnter={() => { setIsHovering(true); stopAutoplay(); }} onMouseLeave={() => { setIsHovering(false); autoplayRef.current = window.setInterval(() => setActiveIndex(prev => (prev + 1) % (reviews.length || 1)), 4000); }} onMouseMove={handleMouseMove}>
             <div
               className="flex transition-transform duration-500 ease-in-out"
               style={{ transform: `translateX(-${activeIndex * 100}%)` }}
