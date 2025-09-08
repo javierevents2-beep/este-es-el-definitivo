@@ -164,35 +164,31 @@ const Testimonials = () => {
               ))}
             </div>
           </div>
-          
-          <button 
+
+          <button
             className="absolute left-0 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 p-2 rounded-full text-white"
             onClick={prevTestimonial}
             aria-label="Previous testimonial"
           >
             <ChevronLeft size={24} />
           </button>
-          
-          <button 
+
+          <button
             className="absolute right-0 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 p-2 rounded-full text-white"
             onClick={nextTestimonial}
             aria-label="Next testimonial"
           >
             <ChevronRight size={24} />
           </button>
-          
-          <div className="mt-8 flex justify-center space-x-2">
-            {testimonials.map((_, index) => (
-              <button
-                key={index}
-                className={`w-3 h-3 rounded-full ${
-                  index === activeIndex ? 'bg-secondary' : 'bg-white/30'
-                }`}
-                onClick={() => setActiveIndex(index)}
-                aria-label={`Testimonial ${index + 1}`}
-              />
-            ))}
-          </div>
+
+          {/* removed pagination indicators as requested */}
+
+          {/* tooltip that follows mouse on hover */}
+          {isHovering && (
+            <div onClick={openReviewsLink} role="link" tabIndex={0} style={{ position: 'fixed', left: tooltipPos.x, top: tooltipPos.y, zIndex: 60 }} className="bg-white text-primary px-3 py-1 rounded shadow cursor-pointer text-sm">
+              Ver nossos reviews
+            </div>
+          )}
         </div>
       </div>
     </section>
