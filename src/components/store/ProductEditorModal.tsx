@@ -347,7 +347,7 @@ const ProductEditorModal: React.FC<Props> = ({ open, onClose, product, onSaved }
 
             <div className="max-h-64 overflow-auto border rounded p-2 mb-4">
               {loadingAffected && <div className="text-sm text-gray-500">Carregando produtos afetados...</div>}
-              {!loadingAffected && affectedProducts.length === 0 && <div className="text-sm text-gray-500">No hay productos con esta categoría.</div>}
+              {!loadingAffected && affectedProducts.length === 0 && <div className="text-sm text-gray-500">Não há produtos com esta categoria.</div>}
               {!loadingAffected && affectedProducts.length > 0 && (
                 <ul className="space-y-2">
                   {affectedProducts.map((p, idx) => (
