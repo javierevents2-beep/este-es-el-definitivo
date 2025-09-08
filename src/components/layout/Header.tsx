@@ -145,14 +145,14 @@ const Header = () => {
                   {link.path ? (
                     <Link
                       to={link.path}
-                      className="font-lato text-sm tracking-wide uppercase text-white hover:text-secondary transition-colors"
+                      className={`font-lato text-sm tracking-wide uppercase ${isScrolled || !isHomePage ? 'text-white' : 'text-primary'} hover:text-secondary transition-colors`}
                     >
                       {link.name}
                     </Link>
                   ) : (
                     <button
                       onClick={link.action}
-                      className="font-lato text-sm tracking-wide uppercase text-white hover:text-secondary transition-colors"
+                      className={`font-lato text-sm tracking-wide uppercase ${isScrolled || !isHomePage ? 'text-white' : 'text-primary'} hover:text-secondary transition-colors`}
                     >
                       {link.name}
                     </button>
@@ -175,14 +175,14 @@ const Header = () => {
                   {link.path ? (
                     <Link
                       to={link.path}
-                      className="font-lato text-sm tracking-wide uppercase text-white hover:text-secondary transition-colors"
+                      className={`font-lato text-sm tracking-wide uppercase ${isScrolled || !isHomePage ? 'text-white' : 'text-primary'} hover:text-secondary transition-colors`}
                     >
                       {link.name}
                     </Link>
                   ) : (
                     <button
                       onClick={link.action}
-                      className="font-lato text-sm tracking-wide uppercase text-white hover:text-secondary transition-colors"
+                      className={`font-lato text-sm tracking-wide uppercase ${isScrolled || !isHomePage ? 'text-white' : 'text-primary'} hover:text-secondary transition-colors`}
                     >
                       {link.name}
                     </button>
