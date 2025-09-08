@@ -139,6 +139,12 @@ function removeAllOverlays() {
 
 export function initImageAdminOverlay() {
   if (active) return;
+  // Require authenticated user
+  if (!auth || !auth.currentUser) {
+    alert('Para activar el modo administrador y subir imágenes debes iniciar sesión en la aplicación.');
+    return;
+  }
+
   active = true;
   // initial pass
   const imgs = Array.from(document.querySelectorAll('img')) as HTMLImageElement[];
