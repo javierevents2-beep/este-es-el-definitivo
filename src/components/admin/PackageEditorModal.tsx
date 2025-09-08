@@ -33,6 +33,10 @@ const PackageEditorModal: React.FC<PackageEditorModalProps> = ({ open, onClose, 
     setFeaturesText((pkg.features || []).join('\n'));
     setImageUrl(pkg.image_url || '');
     setCategory(pkg.category || '');
+    // load sections if present
+    const s = Array.isArray((pkg as any).sections) ? (pkg as any).sections.slice() : [];
+    setSections(s);
+    setSelectedSection(s[0] || '');
   }, [pkg]);
 
   const handleSave = async () => {
