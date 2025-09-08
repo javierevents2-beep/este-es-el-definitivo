@@ -204,9 +204,6 @@ const Header = () => {
 
             <div className="flex items-center space-x-6 text-white">
               <CartIcon />
-              <button onClick={toggleAdminFromHeader} aria-label="Admin" title={isAdmin ? 'Sair do modo admin' : 'Modo administrador'}>
-                {isAdmin ? <EyeOff size={20} className="text-white" aria-hidden="true" /> : <Eye size={20} className="text-white" aria-hidden="true" />}
-              </button>
             </div>
           </div>
 
