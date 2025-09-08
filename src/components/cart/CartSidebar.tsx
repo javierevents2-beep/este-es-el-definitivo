@@ -76,7 +76,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose }) => {
                               <div key={item.id} className="bg-gray-50 rounded-lg p-4">
                                 <div className="flex gap-3">
                                   <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
-                                    <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                                    <img loading="lazy" src={item.image} alt={item.name} className="w-full h-full object-cover" />
                                   </div>
                                   <div className="flex-1 min-w-0">
                                     <h3 className="font-medium text-sm text-gray-900 truncate">{item.name}</h3>
@@ -109,7 +109,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose }) => {
                               <div key={item.id} className="bg-gray-50 rounded-lg p-4">
                                 <div className="flex gap-3">
                                   <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
-                                    <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                                    <img loading="lazy" src={item.image} alt={item.name} className="w-full h-full object-cover" />
                                   </div>
                                   <div className="flex-1 min-w-0">
                                     <h3 className="font-medium text-sm text-gray-900 truncate">{item.name}</h3>
@@ -267,7 +267,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose }) => {
                               <div key={item.id} className="bg-gray-50 rounded-lg p-4">
                                 <div className="flex gap-3">
                                   <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
-                                    <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                                    <img loading="lazy" src={item.image} alt={item.name} className="w-full h-full object-cover" />
                                   </div>
                                   <div className="flex-1 min-w-0">
                                     <h3 className="font-medium text-sm text-gray-900 truncate">{item.name}</h3>
@@ -303,7 +303,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose }) => {
                               <div key={item.id} className="bg-gray-50 rounded-lg p-4">
                                 <div className="flex gap-3">
                                   <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
-                                    <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                                    <img loading="lazy" src={item.image} alt={item.name} className="w-full h-full object-cover" />
                                   </div>
                                   <div className="flex-1 min-w-0">
                                     <h3 className="font-medium text-sm text-gray-900 truncate">{item.name}</h3>
