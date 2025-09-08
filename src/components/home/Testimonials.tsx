@@ -1,8 +1,9 @@
 import { useRef, useEffect, useState } from 'react';
-import { Star, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Star, ChevronLeft, ChevronRight, Edit } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { fetchReviews, updateReview, Review } from '../../utils/reviewsService';
 
-const testimonials = [
+const defaultTestimonials = [
   {
     id: 1,
     name: 'Ana & Pedro',
@@ -26,32 +27,9 @@ const testimonials = [
     text: 'Nossa sessão familiar foi perfeita! As crianças se sentiram à vontade e isso se refletiu nas fotos. O resultado final superou nossas expectativas - fotos autênticas e cheias de vida.',
     rating: 5,
     image: 'https://images.pexels.com/photos/91227/pexels-photo-91227.jpeg?auto=compress&cs=tinysrgb&w=1600'
-  },
-  {
-    id: 4,
-    name: 'Mariana',
-    event: 'Casamento',
-    text: 'Equipe profissional e extremamente dedicada. O resultado ficou incrível, recomendo a todos!',
-    rating: 5,
-    image: 'https://images.pexels.com/photos/3771833/pexels-photo-3771833.jpeg?auto=compress&cs=tinysrgb&w=1600'
-  },
-  {
-    id: 5,
-    name: 'Rodrigo & Paula',
-    event: 'Pré-wedding',
-    text: 'Nos divertimos muito nas fotos, e o álbum ficou maravilhoso. Excelente trabalho!',
-    rating: 5,
-    image: 'https://images.pexels.com/photos/3184405/pexels-photo-3184405.jpeg?auto=compress&cs=tinysrgb&w=1600'
-  },
-  {
-    id: 6,
-    name: 'Lara',
-    event: 'Ensaio Newborn',
-    text: 'Delicadeza e paciência com o bebê. Muito obrigada por registrar esse momento tão único.',
-    rating: 5,
-    image: 'https://images.pexels.com/photos/3775141/pexels-photo-3775141.jpeg?auto=compress&cs=tinysrgb&w=1600'
   }
 ];
+
 
 const Testimonials = () => {
   const [activeIndex, setActiveIndex] = useState(0);
