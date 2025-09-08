@@ -8,6 +8,7 @@ import StorePopup from '../components/store/StorePopup';
 import { sessionPackages } from '../data/sessionsData';
 import { eventPackages } from '../data/eventsData';
 import { maternityPackages } from '../data/maternityData';
+import { useFeatureFlags } from '../contexts/FeatureFlagsContext';
 
 type BookingStep = 'contract' | 'form' | 'preview' | 'complete';
 
@@ -39,6 +40,7 @@ const BookingPage = () => {
   });
 
   const allPackages = [...sessionPackages, ...eventPackages, ...maternityPackages];
+  const { flags } = useFeatureFlags();
 
   useEffect(() => {
     if (cartItems && cartItems.length > 0) {
@@ -162,24 +164,32 @@ const BookingPage = () => {
               Você precisa adicionar serviços ao carrinho antes de fazer uma reserva.
             </p>
             <div className="space-y-3">
-              <button
-                onClick={() => window.location.href = '/portrait'}
-                className="btn-primary w-full"
-              >
-                Ver Sessões de Retratos
-              </button>
-              <button
-                onClick={() => window.location.href = '/maternity'}
-                className="btn-secondary w-full"
-              >
-                Ver Sessões de Gestantes
-              </button>
-              <button
-                onClick={() => window.location.href = '/events'}
-                className="btn-secondary w-full"
-              >
-                Ver Pacotes de Eventos
-              </button>
+                {flags.pages.portrait && (
+                <button
+                  onClick={() => window.location.href = '/portrait'}
+                  className="btn-primary w-full"
+                >
+                  Ver Sessões de Retratos
+                </button>
+              )}
+
+              {flags.pages.maternity && (
+                <button
+                  onClick={() => window.location.href = '/maternity'}
+                  className="btn-secondary w-full"
+                >
+                  Ver Sess��es de Gestantes
+                </button>
+              )}
+
+              {flags.pages.events && (
+                <button
+                  onClick={() => window.location.href = '/events'}
+                  className="btn-secondary w-full"
+                >
+                  Ver Pacotes de Eventos
+                </button>
+              )}
             </div>
           </div>
         </div>

@@ -1,5 +1,6 @@
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
+import { useFeatureFlags } from '../../contexts/FeatureFlagsContext';
 
 interface ButtonProps {
   children: ReactNode;
@@ -11,47 +12,67 @@ interface ButtonProps {
   className?: string;
 }
 
-export const Button = ({ 
-  children, 
-  variant = 'primary', 
-  to, 
-  href, 
+const PATH_TO_KEY: Record<string, keyof import('../../contexts/FeatureFlagsContext').PageKey | string> = {
+  '/': 'home',
+  '/portfolio': 'portfolio',
+  '/portrait': 'portrait',
+  '/maternity': 'maternity',
+  '/events': 'events',
+  '/contact': 'contact',
+  '/booking': 'booking',
+  '/store': 'store',
+  '/admin': 'admin',
+  '/dashboard': 'clientDashboard',
+  '/packages-admin': 'packagesAdmin'
+};
+
+export const Button = ({
+  children,
+  variant = 'primary',
+  to,
+  href,
   onClick,
   type = 'button',
   className = ''
 }: ButtonProps) => {
-  const baseClasses = variant === 'primary' 
-    ? 'btn-primary' 
+  const { flags } = useFeatureFlags();
+
+  const baseClasses = variant === 'primary'
+    ? 'btn-primary'
     : 'btn-secondary';
-  
-  // Internal link with React Router
+
+  // If this is a link to a page that is disabled, render nothing
   if (to) {
+    const key = PATH_TO_KEY[to];
+    if (key && !(flags.pages as any)[key]) {
+      return null;
+    }
     return (
       <Link to={to} className={`${baseClasses} ${className}`}>
         {children}
       </Link>
     );
   }
-  
-  // External link
+
+  // External link (always render)
   if (href) {
     return (
-      <a 
-        href={href} 
+      <a
+        href={href}
         className={`${baseClasses} ${className}`}
-        target="_blank" 
+        target="_blank"
         rel="noopener noreferrer"
       >
         {children}
       </a>
     );
   }
-  
-  // Button
+
+  // Regular button
   return (
-    <button 
-      type={type} 
-      className={`${baseClasses} ${className}`} 
+    <button
+      type={type}
+      className={`${baseClasses} ${className}`}
       onClick={onClick}
     >
       {children}

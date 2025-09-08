@@ -1,12 +1,15 @@
-import { useTranslation } from 'react-i18next';
 import Button from '../ui/Button';
 import { useNavigate } from 'react-router-dom';
+import { useFeatureFlags } from '../../contexts/FeatureFlagsContext';
+import { useTranslation } from 'react-i18next';
 
 const CTA = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { flags } = useFeatureFlags();
 
   const handleBooking = () => {
+    if (!flags.pages.booking) return;
     navigate('/booking');
   };
 
