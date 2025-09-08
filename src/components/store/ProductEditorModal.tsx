@@ -325,7 +325,7 @@ const ProductEditorModal: React.FC<Props> = ({ open, onClose, product, onSaved }
                 <p className="text-sm text-gray-600">Você está prestes a excluir a categoria "{deletingCategory || form.category}".</p>
               </div>
               <div className="text-right">
-                <div className="text-sm text-gray-500">Afectados</div>
+                <div className="text-sm text-gray-500">Produtos afetados</div>
                 <div className="text-xl font-bold">{loadingAffected ? '...' : affectedProducts.length}</div>
               </div>
             </div>
