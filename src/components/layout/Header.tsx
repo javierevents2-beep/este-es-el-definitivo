@@ -122,7 +122,7 @@ const Header = () => {
               <li key={link.name}>
                 {link.key === 'admin' ? (
                   <button
-                    onClick={() => setShowAdminKeyModal(true)}
+                    onClick={toggleAdminFromHeader}
                     className="font-lato text-sm tracking-wide uppercase text-white hover:text-secondary transition-colors"
                   >
                     {link.name}
@@ -177,7 +177,7 @@ const Header = () => {
                 <li key={link.name}>
                   {link.key === 'admin' ? (
                     <button
-                      onClick={() => setShowAdminKeyModal(true)}
+                      onClick={toggleAdminFromHeader}
                       className="text-primary font-lato text-lg uppercase tracking-wide hover:text-secondary transition-colors"
                     >
                       {link.name}
