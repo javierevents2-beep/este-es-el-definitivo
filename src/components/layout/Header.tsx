@@ -9,6 +9,10 @@ import { useFeatureFlags } from '../../contexts/FeatureFlagsContext';
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showAdminKeyModal, setShowAdminKeyModal] = useState(false);
+  const [adminKey, setAdminKey] = useState('');
+  const [adminError, setAdminError] = useState('');
+  const externalAdminUrl = 'https://462d8f1eefbe46589b27f5b6c769d89d-fd5e9bc0-fbb5-4a12-b1c3-726239.projects.builder.codes/store';
   const location = useLocation();
   const { t } = useTranslation();
 
