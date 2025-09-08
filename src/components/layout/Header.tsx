@@ -55,7 +55,7 @@ const Header = () => {
       setShowAdminModal(false);
       setAdminModalKey('');
       setAdminModalError('');
-      navigate('/store');
+      navigate('/packages-admin');
     } else {
       setAdminModalError('Clave incorrecta');
     }
