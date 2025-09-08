@@ -50,9 +50,9 @@ const Layout = ({ children }: LayoutProps) => {
   }
 
   return (
-    <div className="flex flex-col min-h-screen opacity-100 transition-opacity duration-500">
+    <div className="flex flex-col min-h-screen opacity-100 transition-opacity duration-500 bg-background text-primary">
       <Header />
-      <main className="flex-grow">
+      <main className="flex-grow container-custom">
         {children}
       </main>
       <Footer />
