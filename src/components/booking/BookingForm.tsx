@@ -545,8 +545,8 @@ const BookingForm: React.FC<BookingFormProps> = ({ initialData, packages, onSubm
                         }}
                       >
                         <div className="aspect-square overflow-hidden">
-                          <img 
-                            src={dress.image} 
+                          <img loading="lazy"
+                            src={dress.image}
                             alt={dress.name}
                             className="w-full h-full object-cover"
                           />
