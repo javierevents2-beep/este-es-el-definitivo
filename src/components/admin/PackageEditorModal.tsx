@@ -17,6 +17,10 @@ const PackageEditorModal: React.FC<PackageEditorModalProps> = ({ open, onClose, 
   const [featuresText, setFeaturesText] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [category, setCategory] = useState<string | undefined>('');
+  const [sections, setSections] = useState<string[]>([]);
+  const [showNewSection, setShowNewSection] = useState(false);
+  const [newSection, setNewSection] = useState('');
+  const [selectedSection, setSelectedSection] = useState<string | undefined>('');
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
