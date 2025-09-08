@@ -36,9 +36,9 @@ const Hero = () => {
             }`}
           >
             <div className="absolute inset-0 bg-hero-pattern z-10"></div>
-            <img 
-              src={image} 
-              alt="Wild Pictures Studio Photography" 
+            <img loading="lazy"
+              src={image}
+              alt="Wild Pictures Studio Photography"
               className="absolute inset-0 w-full h-full object-cover"
             />
           </div>
