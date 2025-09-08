@@ -124,8 +124,8 @@ const Header = () => {
           <div className="hidden md:flex items-center">
             <ul className="flex items-center space-x-8">
               <li>
-                <button onClick={toggleAdminFromHeader} className="font-lato text-sm tracking-wide uppercase text-white hover:text-secondary transition-colors">
-                  {isAdmin ? <EyeOff size={18} className="inline mr-2" /> : <Eye size={18} className="inline mr-2" />} Admin
+                <button onClick={toggleAdminFromHeader} aria-label={isAdmin ? 'Sair do modo admin' : 'Modo administrador'} className="p-2 text-white hover:text-secondary transition-colors">
+                  {isAdmin ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </li>
               {navLinks.slice(0, Math.ceil(navLinks.length / 2)).map((link) => (
