@@ -49,7 +49,7 @@ const Header = () => {
   };
 
   const submitAdminModal = () => {
-    if (!adminModalKey) { setAdminModalError('Introduce la clave'); return; }
+    if (!adminModalKey) { setAdminModalError('Insira a senha'); return; }
     if (adminModalKey === '1234') {
       notifyAdminChange(true);
       setShowAdminModal(false);
