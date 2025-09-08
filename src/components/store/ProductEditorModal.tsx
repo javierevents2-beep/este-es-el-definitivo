@@ -373,7 +373,7 @@ const ProductEditorModal: React.FC<Props> = ({ open, onClose, product, onSaved }
 
             <div className="flex justify-end gap-3">
               <button onClick={() => { setShowDeleteCatConfirm(false); setDeletingCategory(null); setAffectedProducts([]); setBulkReassign(null); }} className="px-4 py-2 border rounded">Cancelar</button>
-              <button onClick={handleDeleteCategory} className="px-4 py-2 bg-red-600 text-white rounded">Eliminar y reasignar</button>
+              <button onClick={handleDeleteCategory} className="px-4 py-2 bg-red-600 text-white rounded">Excluir e reatribuir</button>
             </div>
           </div>
         </div>
