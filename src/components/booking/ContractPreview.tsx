@@ -477,8 +477,8 @@ const ContractPreview = ({ data, onConfirm, onBack }: ContractPreviewProps) => {
                       {selectedDresses.map((dress) => (
                         <div key={dress.id} className="text-center">
                           <div className="aspect-square overflow-hidden rounded-lg mb-2">
-                            <img 
-                              src={dress.image} 
+                            <img loading="lazy"
+                              src={dress.image}
                               alt={dress.name}
                               className="w-full h-full object-cover"
                             />
