@@ -191,7 +191,7 @@ const PhotoPackagesManagement = () => {
             {grouped[type].map((p) => (
               <div key={p.id} className="bg-white rounded-xl border border-gray-200 overflow-hidden">
                 <div className="relative">
-                  <img loading="lazy" src={p.image_url} alt={p.title} className="w-full h-44 object-cover" />
+                  <img loading="lazy" src={p.image_url} alt={p.title} className="w-full h-44 object-cover" data-pkg-id={p.id} />
                   {(p as any).active === false && (
                     <span className="absolute top-2 left-2 text-xs px-2 py-1 rounded bg-gray-200 text-gray-700">inactivo</span>
                   )}
