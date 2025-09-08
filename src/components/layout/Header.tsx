@@ -128,56 +128,97 @@ const Header = () => {
           </div>
         )}
 
-        <nav className="hidden md:flex items-center space-x-8">
-          <ul className="flex space-x-8">
-            {navLinks.map((link) => (
-              <li key={link.name}>
-                {link.key === 'admin' ? (
-                  <button
-                    onClick={toggleAdminFromHeader}
-                    className="font-lato text-sm tracking-wide uppercase text-white hover:text-secondary transition-colors"
-                  >
-                    {link.name}
-                  </button>
-                ) : link.path ? (
-                  <Link
-                    to={link.path}
-                    className="font-lato text-sm tracking-wide uppercase text-white hover:text-secondary transition-colors"
-                  >
-                    {link.name}
-                  </Link>
-                ) : (
-                  <button
-                    onClick={link.action}
-                    className="font-lato text-sm tracking-wide uppercase text-white hover:text-secondary transition-colors"
-                  >
-                    {link.name}
-                  </button>
-                )}
-              </li>
-            ))}
-          </ul>
-          <div className="flex items-center space-x-6 text-white">
+        {/* Desktop: split navigation into left / center logo / right */}
+        <div className="container-custom flex justify-between items-center md:grid md:grid-cols-3">
+          <div className="hidden md:flex items-center">
+            <ul className="flex space-x-8">
+              {navLinks.slice(0, Math.ceil(navLinks.length / 2)).map((link) => (
+                <li key={link.name}>
+                  {link.key === 'admin' ? (
+                    <button
+                      onClick={toggleAdminFromHeader}
+                      className="font-lato text-sm tracking-wide uppercase text-white hover:text-secondary transition-colors"
+                    >
+                      {link.name}
+                    </button>
+                  ) : link.path ? (
+                    <Link
+                      to={link.path}
+                      className="font-lato text-sm tracking-wide uppercase text-white hover:text-secondary transition-colors"
+                    >
+                      {link.name}
+                    </Link>
+                  ) : (
+                    <button
+                      onClick={link.action}
+                      className="font-lato text-sm tracking-wide uppercase text-white hover:text-secondary transition-colors"
+                    >
+                      {link.name}
+                    </button>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="flex justify-center z-50">
+            <Link to="/" className="z-50">
+              <Logo dark={!(isScrolled || !isHomePage)} />
+            </Link>
+          </div>
+
+          <div className="hidden md:flex items-center justify-end space-x-6">
+            <ul className="flex space-x-8">
+              {navLinks.slice(Math.ceil(navLinks.length / 2)).map((link) => (
+                <li key={link.name}>
+                  {link.key === 'admin' ? (
+                    <button
+                      onClick={toggleAdminFromHeader}
+                      className="font-lato text-sm tracking-wide uppercase text-white hover:text-secondary transition-colors"
+                    >
+                      {link.name}
+                    </button>
+                  ) : link.path ? (
+                    <Link
+                      to={link.path}
+                      className="font-lato text-sm tracking-wide uppercase text-white hover:text-secondary transition-colors"
+                    >
+                      {link.name}
+                    </Link>
+                  ) : (
+                    <button
+                      onClick={link.action}
+                      className="font-lato text-sm tracking-wide uppercase text-white hover:text-secondary transition-colors"
+                    >
+                      {link.name}
+                    </button>
+                  )}
+                </li>
+              ))}
+            </ul>
+
+            <div className="flex items-center space-x-6 text-white">
+              <CartIcon />
+              <button onClick={toggleAdminFromHeader} aria-label="Admin" title={isAdmin ? 'Sair do modo admin' : 'Modo administrador'}>
+                {isAdmin ? <EyeOff size={20} className="text-white" aria-hidden="true" /> : <Eye size={20} className="text-white" aria-hidden="true" />}
+              </button>
+            </div>
+          </div>
+
+          <div className="md:hidden flex items-center space-x-4">
             <CartIcon />
-            <button onClick={toggleAdminFromHeader} aria-label="Admin" title={isAdmin ? 'Sair do modo admin' : 'Modo administrador'}>
-              {isAdmin ? <EyeOff size={20} className="text-white" aria-hidden="true" /> : <Eye size={20} className="text-white" aria-hidden="true" />}
+            <button
+              className="z-50"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Toggle menu"
+            >
+              {mobileMenuOpen ? (
+                <X size={24} className={`${isScrolled || !isHomePage ? 'text-white' : 'text-primary'}`} />
+              ) : (
+                <Menu size={24} className={`${isScrolled || !isHomePage ? 'text-white' : 'text-primary'}`} />
+              )}
             </button>
           </div>
-        </nav>
-
-        <div className="md:hidden flex items-center space-x-4">
-          <CartIcon />
-          <button 
-            className="z-50"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Toggle menu"
-          >
-            {mobileMenuOpen ? (
-              <X size={24} className={`${isScrolled || !isHomePage ? 'text-white' : 'text-primary'}`} />
-            ) : (
-              <Menu size={24} className={`${isScrolled || !isHomePage ? 'text-white' : 'text-primary'}`} />
-            )}
-          </button>
         </div>
 
         <div className={`fixed inset-0 bg-white z-40 transform transition-transform duration-300 ease-in-out ${
@@ -211,7 +252,7 @@ const Header = () => {
                   )}
                 </li>
               ))}
-              
+
             </ul>
             <div className="mt-auto pb-10">
               <div className="mt-6 flex justify-center">
