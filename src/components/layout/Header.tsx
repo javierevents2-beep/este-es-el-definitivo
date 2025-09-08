@@ -159,7 +159,7 @@ const Header = () => {
           </ul>
           <div className="flex items-center space-x-6 text-white">
             <CartIcon />
-            <button onClick={toggleAdminFromHeader} aria-label="Admin" title={isAdmin ? 'Salir modo admin' : 'Modo administrador'}>
+            <button onClick={toggleAdminFromHeader} aria-label="Admin" title={isAdmin ? 'Sair do modo admin' : 'Modo administrador'}>
               {isAdmin ? <EyeOff size={20} className="text-white" aria-hidden="true" /> : <Eye size={20} className="text-white" aria-hidden="true" />}
             </button>
           </div>
@@ -215,7 +215,7 @@ const Header = () => {
             </ul>
             <div className="mt-auto pb-10">
               <div className="mt-6 flex justify-center">
-                <button onClick={toggleAdminFromHeader} aria-label="Admin" title={isAdmin ? 'Salir modo admin' : 'Modo administrador'}>
+                <button onClick={toggleAdminFromHeader} aria-label="Admin" title={isAdmin ? 'Sair do modo admin' : 'Modo administrador'}>
                   {isAdmin ? <EyeOff size={24} className="text-primary" aria-hidden="true" /> : <Eye size={24} className="text-primary" aria-hidden="true" />}
                 </button>
               </div>
