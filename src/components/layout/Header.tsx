@@ -9,12 +9,45 @@ import { useFeatureFlags } from '../../contexts/FeatureFlagsContext';
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [showAdminKeyModal, setShowAdminKeyModal] = useState(false);
-  const [adminKey, setAdminKey] = useState('');
-  const [adminError, setAdminError] = useState('');
-  const externalAdminUrl = 'https://462d8f1eefbe46589b27f5b6c769d89d-fd5e9bc0-fbb5-4a12-b1c3-726239.projects.builder.codes/store';
+  const [isAdmin, setIsAdmin] = useState<boolean>(Boolean(typeof window !== 'undefined' && localStorage.getItem('site_admin_mode')));
   const location = useLocation();
+  const navigate = useNavigate();
   const { t } = useTranslation();
+
+  useEffect(() => {
+    const handler = (e: Event | any) => {
+      const val = e?.detail ?? (localStorage.getItem('site_admin_mode') ? true : false);
+      setIsAdmin(Boolean(val));
+    };
+    window.addEventListener('siteAdminModeChanged', handler as EventListener);
+    window.addEventListener('storage', handler as EventListener);
+    return () => {
+      window.removeEventListener('siteAdminModeChanged', handler as EventListener);
+      window.removeEventListener('storage', handler as EventListener);
+    };
+  }, []);
+
+  const notifyAdminChange = (val: boolean) => {
+    try {
+      if (val) localStorage.setItem('site_admin_mode', '1'); else localStorage.removeItem('site_admin_mode');
+    } catch (_) {}
+    window.dispatchEvent(new CustomEvent('siteAdminModeChanged', { detail: val }));
+    setIsAdmin(val);
+  };
+
+  const toggleAdminFromHeader = () => {
+    if (!isAdmin) {
+      const adminPassword = prompt('Senha de administrador:');
+      if (adminPassword === '1234') {
+        notifyAdminChange(true);
+        navigate('/store');
+      } else if (adminPassword !== null) {
+        alert('Senha incorreta');
+      }
+    } else {
+      notifyAdminChange(false);
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -114,8 +147,8 @@ const Header = () => {
           </ul>
           <div className="flex items-center space-x-6 text-white">
             <CartIcon />
-            <button onClick={() => setShowAdminKeyModal(true)} aria-label="Admin">
-              <Eye size={20} className="text-white" aria-hidden="true" />
+            <button onClick={toggleAdminFromHeader} aria-label="Admin" title={isAdmin ? 'Salir modo admin' : 'Modo administrador'}>
+              {isAdmin ? <EyeOff size={20} className="text-white" aria-hidden="true" /> : <Eye size={20} className="text-white" aria-hidden="true" />}
             </button>
           </div>
         </nav>
@@ -170,8 +203,8 @@ const Header = () => {
             </ul>
             <div className="mt-auto pb-10">
               <div className="mt-6 flex justify-center">
-                <button onClick={() => setShowAdminKeyModal(true)} aria-label="Admin">
-                  <Eye size={24} className="text-primary" aria-hidden="true" />
+                <button onClick={toggleAdminFromHeader} aria-label="Admin" title={isAdmin ? 'Salir modo admin' : 'Modo administrador'}>
+                  {isAdmin ? <EyeOff size={24} className="text-primary" aria-hidden="true" /> : <Eye size={24} className="text-primary" aria-hidden="true" />}
                 </button>
               </div>
             </div>
@@ -179,43 +212,6 @@ const Header = () => {
         </div>
       </div>
 
-      {showAdminKeyModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-          <div className="bg-white rounded-md max-w-md w-full p-6">
-            <h3 className="text-lg font-semibold mb-4">Acceso a Panel de Administración</h3>
-            <p className="text-sm text-gray-600 mb-4">Introduce la clave para acceder al panel de tienda.</p>
-            <input
-              type="password"
-              value={adminKey}
-              onChange={(e) => setAdminKey(e.target.value)}
-              className="w-full border border-gray-300 rounded px-3 py-2 mb-3"
-              placeholder="Clave de acceso"
-            />
-            {adminError && <div className="text-red-500 text-sm mb-2">{adminError}</div>}
-            <div className="flex justify-end space-x-3">
-              <button
-                onClick={() => { setShowAdminKeyModal(false); setAdminKey(''); setAdminError(''); }}
-                className="px-4 py-2 border rounded"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={() => {
-                  if (!adminKey) { setAdminError('Introduce la clave'); return; }
-                  const url = `${externalAdminUrl}?key=${encodeURIComponent(adminKey)}`;
-                  window.open(url, '_blank');
-                  setShowAdminKeyModal(false);
-                  setAdminKey('');
-                  setAdminError('');
-                }}
-                className="px-4 py-2 bg-primary text-white rounded"
-              >
-                Entrar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
     </header>
   );
