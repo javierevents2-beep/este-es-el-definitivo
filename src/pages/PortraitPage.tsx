@@ -197,9 +197,9 @@ const PortraitPage = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {galleryImages.map((image) => (
               <div key={image.id} className="gallery-item">
-                <img 
-                  src={image.src} 
-                  alt={image.alt} 
+                <img loading="lazy"
+                  src={image.src}
+                  alt={image.alt}
                   className="w-full h-80 object-cover"
                 />
                 <div className="gallery-overlay">
