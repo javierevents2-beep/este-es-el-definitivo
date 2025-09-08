@@ -53,7 +53,7 @@ const Header = () => {
       { name: t('nav.store'), path: '/store', key: 'store' },
       { name: t('nav.book'), action: handleBooking, key: 'booking' },
       { name: t('nav.contact'), path: '/contact', key: 'contact' },
-      { name: 'Admin', path: '/packages-admin', key: 'packagesAdmin' },
+      { name: 'Admin', path: '/packages-admin', key: 'admin' },
     ];
     return links.filter(l => !l.key || flags.pages[l.key as keyof typeof flags.pages]);
   }, [t, flags]);
@@ -83,9 +83,16 @@ const Header = () => {
           <ul className="flex space-x-8">
             {navLinks.map((link) => (
               <li key={link.name}>
-                {link.path ? (
-                  <Link 
-                    to={link.path} 
+                {link.key === 'admin' ? (
+                  <button
+                    onClick={() => setShowAdminKeyModal(true)}
+                    className="font-lato text-sm tracking-wide uppercase text-white hover:text-secondary transition-colors"
+                  >
+                    {link.name}
+                  </button>
+                ) : link.path ? (
+                  <Link
+                    to={link.path}
                     className="font-lato text-sm tracking-wide uppercase text-white hover:text-secondary transition-colors"
                   >
                     {link.name}
@@ -103,9 +110,9 @@ const Header = () => {
           </ul>
           <div className="flex items-center space-x-6 text-white">
             <CartIcon />
-            <Link to="/packages-admin" aria-label="Admin">
+            <button onClick={() => setShowAdminKeyModal(true)} aria-label="Admin">
               <Eye size={20} className="text-white" aria-hidden="true" />
-            </Link>
+            </button>
           </div>
         </nav>
 
@@ -131,9 +138,16 @@ const Header = () => {
             <ul className="flex flex-col space-y-6 text-center">
               {navLinks.map((link) => (
                 <li key={link.name}>
-                  {link.path ? (
-                    <Link 
-                      to={link.path} 
+                  {link.key === 'admin' ? (
+                    <button
+                      onClick={() => setShowAdminKeyModal(true)}
+                      className="text-primary font-lato text-lg uppercase tracking-wide hover:text-secondary transition-colors"
+                    >
+                      {link.name}
+                    </button>
+                  ) : link.path ? (
+                    <Link
+                      to={link.path}
                       className="text-primary font-lato text-lg uppercase tracking-wide hover:text-secondary transition-colors"
                     >
                       {link.name}
@@ -152,15 +166,53 @@ const Header = () => {
             </ul>
             <div className="mt-auto pb-10">
               <div className="mt-6 flex justify-center">
-                <Link to="/packages-admin" aria-label="Admin">
+                <button onClick={() => setShowAdminKeyModal(true)} aria-label="Admin">
                   <Eye size={24} className="text-primary" aria-hidden="true" />
-                </Link>
+                </button>
               </div>
             </div>
           </div>
         </div>
       </div>
-      
+
+      {showAdminKeyModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+          <div className="bg-white rounded-md max-w-md w-full p-6">
+            <h3 className="text-lg font-semibold mb-4">Acceso a Panel de Administración</h3>
+            <p className="text-sm text-gray-600 mb-4">Introduce la clave para acceder al panel de tienda.</p>
+            <input
+              type="password"
+              value={adminKey}
+              onChange={(e) => setAdminKey(e.target.value)}
+              className="w-full border border-gray-300 rounded px-3 py-2 mb-3"
+              placeholder="Clave de acceso"
+            />
+            {adminError && <div className="text-red-500 text-sm mb-2">{adminError}</div>}
+            <div className="flex justify-end space-x-3">
+              <button
+                onClick={() => { setShowAdminKeyModal(false); setAdminKey(''); setAdminError(''); }}
+                className="px-4 py-2 border rounded"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={() => {
+                  if (!adminKey) { setAdminError('Introduce la clave'); return; }
+                  const url = `${externalAdminUrl}?key=${encodeURIComponent(adminKey)}`;
+                  window.open(url, '_blank');
+                  setShowAdminKeyModal(false);
+                  setAdminKey('');
+                  setAdminError('');
+                }}
+                className="px-4 py-2 bg-primary text-white rounded"
+              >
+                Entrar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </header>
   );
 };
