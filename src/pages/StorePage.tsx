@@ -215,15 +215,7 @@ const StorePage = () => {
       <div className="container-custom">
         <div className="flex justify-between items-center mb-8">
           <h1 className="section-title">Tienda</h1>
-          <div className="flex items-center gap-4">
-            <button
-              onClick={toggleAdminMode}
-              className={`p-2 rounded-full ${isAdmin ? 'bg-red-100 text-red-600' : 'bg-gray-100 text-gray-600'} hover:bg-opacity-80`}
-              title={isAdmin ? 'Sair do modo admin' : 'Modo administrador'}
-            >
-              {isAdmin ? <EyeOff size={20} /> : <Eye size={20} />}
-            </button>
-          </div>
+          <div className="flex items-center gap-4" />
         </div>
 
         {/* Admin dashboard + products */}
