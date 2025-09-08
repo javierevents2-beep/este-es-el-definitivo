@@ -227,8 +227,8 @@ const Header = () => {
       {showAdminModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
           <div className="bg-white rounded-lg max-w-md w-full p-6 shadow-xl">
-            <h3 className="text-xl font-semibold mb-2">Acceso al panel de tienda</h3>
-            <p className="text-sm text-gray-600 mb-4">Introduce la clave de administrador para acceder al panel.</p>
+            <h3 className="text-xl font-semibold mb-2">Acesso ao painel da loja</h3>
+            <p className="text-sm text-gray-600 mb-4">Insira a senha de administrador para acessar o painel.</p>
             <input
               type="password"
               autoFocus
