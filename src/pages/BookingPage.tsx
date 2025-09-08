@@ -178,7 +178,7 @@ const BookingPage = () => {
                   onClick={() => window.location.href = '/maternity'}
                   className="btn-secondary w-full"
                 >
-                  Ver Sess��es de Gestantes
+                  Ver Sessões de Gestantes
                 </button>
               )}
 
