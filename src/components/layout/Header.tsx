@@ -1,9 +1,8 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Eye } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import Logo from '../ui/Logo';
-import LanguageSelector from '../ui/LanguageSelector';
 import CartIcon from '../cart/CartIcon';
 import { useFeatureFlags } from '../../contexts/FeatureFlagsContext';
 
@@ -54,6 +53,7 @@ const Header = () => {
       { name: t('nav.store'), path: '/store', key: 'store' },
       { name: t('nav.book'), action: handleBooking, key: 'booking' },
       { name: t('nav.contact'), path: '/contact', key: 'contact' },
+      { name: 'Admin', path: '/admin', key: 'admin' },
     ];
     return links.filter(l => !l.key || flags.pages[l.key as keyof typeof flags.pages]);
   }, [t, flags]);
@@ -103,8 +103,7 @@ const Header = () => {
           </ul>
           <div className="flex items-center space-x-6 text-white">
             <CartIcon />
-            
-            <LanguageSelector />
+            <Eye size={20} className="text-white" aria-hidden="true" />
           </div>
         </nav>
 
@@ -151,7 +150,7 @@ const Header = () => {
             </ul>
             <div className="mt-auto pb-10">
               <div className="mt-6 flex justify-center">
-                <LanguageSelector />
+                <Eye size={24} className="text-primary" aria-hidden="true" />
               </div>
             </div>
           </div>
