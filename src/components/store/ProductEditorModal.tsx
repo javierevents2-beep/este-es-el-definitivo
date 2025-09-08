@@ -98,12 +98,21 @@ const ProductEditorModal: React.FC<Props> = ({ open, onClose, product, onSaved }
   }, []);
 
   const handleUpload = async (file: File) => {
-    const storage = getStorage();
-    const key = `product_images/${Date.now()}-${file.name}`;
-    const storageRef = ref(storage, key);
-    await uploadBytes(storageRef, file);
-    const url = await getDownloadURL(storageRef);
-    setForm(prev => ({ ...prev, image_url: url }));
+    try {
+      const storage = getStorage();
+      const key = `product_images/${Date.now()}-${file.name}`;
+      const storageRef = ref(storage, key);
+      await uploadBytes(storageRef, file);
+      const url = await getDownloadURL(storageRef);
+      setForm(prev => ({ ...prev, image_url: url }));
+    } catch (e: any) {
+      console.error('Product image upload failed', e);
+      if (e && e.code === 'storage/unauthorized') {
+        alert('No tienes permiso para subir imágenes al Storage. Inicia sesión o verifica las reglas de Firebase.');
+      } else {
+        alert('Error al subir la imagen. Revisa la consola para más detalles.');
+      }
+    }
   };
 
   const addCategory = () => {
