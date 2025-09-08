@@ -53,7 +53,7 @@ const Header = () => {
       { name: t('nav.store'), path: '/store', key: 'store' },
       { name: t('nav.book'), action: handleBooking, key: 'booking' },
       { name: t('nav.contact'), path: '/contact', key: 'contact' },
-      { name: 'Admin', path: '/admin', key: 'admin' },
+      { name: 'Admin', path: '/packages-admin', key: 'packagesAdmin' },
     ];
     return links.filter(l => !l.key || flags.pages[l.key as keyof typeof flags.pages]);
   }, [t, flags]);
@@ -103,7 +103,7 @@ const Header = () => {
           </ul>
           <div className="flex items-center space-x-6 text-white">
             <CartIcon />
-            <Link to="/admin" aria-label="Admin">
+            <Link to="/packages-admin" aria-label="Admin">
               <Eye size={20} className="text-white" aria-hidden="true" />
             </Link>
           </div>
@@ -152,7 +152,7 @@ const Header = () => {
             </ul>
             <div className="mt-auto pb-10">
               <div className="mt-6 flex justify-center">
-                <Link to="/admin" aria-label="Admin">
+                <Link to="/packages-admin" aria-label="Admin">
                   <Eye size={24} className="text-primary" aria-hidden="true" />
                 </Link>
               </div>
