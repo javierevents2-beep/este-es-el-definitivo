@@ -2,7 +2,6 @@ import { ReactNode, useEffect, useState } from 'react';
 import Header from './Header';
 import Footer from './Footer';
 import { Camera } from 'lucide-react';
-import { useEffect } from 'react';
 import ImageAdminOverlay from '../admin/ImageAdminOverlay';
 
 interface LayoutProps {
