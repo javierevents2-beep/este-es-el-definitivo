@@ -257,7 +257,7 @@ const AdminStoreDashboard: React.FC<AdminProps> = ({ onNavigate }) => {
             ))}
           </div>
           <div className="pt-3">
-            <button onClick={() => onNavigate?.('contracts')} className="w-full border-2 border-black text-black rounded-none py-2 hover:bg-black hover:text-white">Ver Todos los Contratos</button>
+            <button onClick={() => onNavigate?.('contracts')} className="w-full border-2 border-black text-black rounded-none py-2 hover:bg-black hover:text-white">Ver todos os contratos</button>
           </div>
         </div>
       </div>
