@@ -43,11 +43,11 @@
   }
 
   .btn-primary {
-    @apply bg-white text-black border border-gray-300 py-3 px-6 transition-all duration-300
+    @apply bg-white text-black border-2 border-gray-400 py-3 px-6 transition-all duration-300 shadow-sm
            inline-block text-center text-sm uppercase tracking-wider font-medium cursor-pointer select-none;
   }
   .btn-primary:hover {
-    @apply bg-primary text-white border-primary;
+    @apply bg-primary text-white border-primary shadow-md;
   }
 
   .btn-secondary {
