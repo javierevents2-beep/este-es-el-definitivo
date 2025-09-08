@@ -103,7 +103,9 @@ const Header = () => {
           </ul>
           <div className="flex items-center space-x-6 text-white">
             <CartIcon />
-            <Eye size={20} className="text-white" aria-hidden="true" />
+            <Link to="/admin" aria-label="Admin">
+              <Eye size={20} className="text-white" aria-hidden="true" />
+            </Link>
           </div>
         </nav>
 
@@ -150,7 +152,9 @@ const Header = () => {
             </ul>
             <div className="mt-auto pb-10">
               <div className="mt-6 flex justify-center">
-                <Eye size={24} className="text-primary" aria-hidden="true" />
+                <Link to="/admin" aria-label="Admin">
+                  <Eye size={24} className="text-primary" aria-hidden="true" />
+                </Link>
               </div>
             </div>
           </div>
