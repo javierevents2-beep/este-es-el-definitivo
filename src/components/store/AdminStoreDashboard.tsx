@@ -176,8 +176,8 @@ const AdminStoreDashboard: React.FC<AdminProps> = ({ onNavigate }) => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="section-title">Painel de Administração</h1>
-        <p className="text-gray-600">Gerencie sua loja de produtos personalizados</p>
+        <h1 className="section-title">Panel de Administración</h1>
+        <p className="text-gray-600">Gestiona tu tienda de productos personalizados</p>
       </div>
 
       {/* Stats */}
@@ -198,10 +198,10 @@ const AdminStoreDashboard: React.FC<AdminProps> = ({ onNavigate }) => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Quick Actions */}
         <div className="bg-white rounded-xl border border-gray-200 p-4">
-          <h3 className="font-medium mb-4">Ações Rápidas</h3>
+          <h3 className="font-medium mb-4">Acciones Rápidas</h3>
           <div className="space-y-3">
             <button onClick={() => onNavigate?.('orders')} className="w-full border-2 border-black text-black px-4 py-3 rounded-none hover:bg-black hover:text-white flex items-center justify-center gap-2">
-              Ver Pedidos
+              Ver Órdenes
               <ArrowUpRight size={18} />
             </button>
             <button onClick={() => onNavigate?.('contracts')} className="w-full border-2 border-black text-black px-4 py-3 rounded-none hover:bg-black hover:text-white flex items-center justify-center gap-2">
@@ -209,13 +209,13 @@ const AdminStoreDashboard: React.FC<AdminProps> = ({ onNavigate }) => {
               <ArrowUpRight size={18} />
             </button>
             <button onClick={() => onNavigate?.('products')} className="w-full border-2 border-black text-black px-4 py-3 rounded-none hover:bg-black hover:text-white">
-              Gerenciar Produtos
+              Administrar Productos
             </button>
           </div>
 
           <div className="mt-6 border-t pt-4">
-            <h4 className="font-medium mb-3">Visibilidade de Páginas</h4>
-            <p className="text-sm text-gray-600 mb-3">Habilite ou desabilite páginas para ocultá‑las do site.</p>
+            <h4 className="font-medium mb-3">Visibilidad de Páginas</h4>
+            <p className="text-sm text-gray-600 mb-3">Habilita o deshabilita páginas para ocultarlas del sitio.</p>
             <div className="grid grid-cols-1 gap-2">
               {Object.entries(flags.pages).map(([key, value]) => (
                 <label key={key} className="flex items-center gap-3 border rounded-lg p-2">
@@ -237,7 +237,7 @@ const AdminStoreDashboard: React.FC<AdminProps> = ({ onNavigate }) => {
           <div className="divide-y">
             {nearestContracts.length === 0 && (
               <div className="text-gray-500 text-sm p-4 flex items-center justify-between">
-                <span>Não há contratos próximos</span>
+                <span>No hay contratos próximos</span>
               </div>
             )}
             {nearestContracts.map(({ c, future }) => (
@@ -257,7 +257,7 @@ const AdminStoreDashboard: React.FC<AdminProps> = ({ onNavigate }) => {
             ))}
           </div>
           <div className="pt-3">
-            <button onClick={() => onNavigate?.('contracts')} className="w-full border-2 border-black text-black rounded-none py-2 hover:bg-black hover:text-white">Ver todos os contratos</button>
+            <button onClick={() => onNavigate?.('contracts')} className="w-full border-2 border-black text-black rounded-none py-2 hover:bg-black hover:text-white">Ver Todos los Contratos</button>
           </div>
         </div>
       </div>
