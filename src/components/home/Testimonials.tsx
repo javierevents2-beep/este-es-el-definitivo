@@ -55,9 +55,12 @@ const testimonials = [
 
 const Testimonials = () => {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [isHovering, setIsHovering] = useState(false);
+  const [tooltipPos, setTooltipPos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const sectionRef = useRef<HTMLElement>(null);
+  const autoplayRef = useRef<number | null>(null);
   const { t } = useTranslation();
-  
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -80,12 +83,36 @@ const Testimonials = () => {
     };
   }, []);
 
+  useEffect(() => {
+    // autoplay
+    stopAutoplay();
+    autoplayRef.current = window.setInterval(() => {
+      setActiveIndex(prev => (prev + 1) % testimonials.length);
+    }, 4000);
+    return () => stopAutoplay();
+  }, []);
+
+  const stopAutoplay = () => {
+    if (autoplayRef.current) {
+      clearInterval(autoplayRef.current);
+      autoplayRef.current = null;
+    }
+  };
+
   const nextTestimonial = () => {
     setActiveIndex((prev) => (prev + 1) % testimonials.length);
   };
 
   const prevTestimonial = () => {
     setActiveIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    setTooltipPos({ x: e.clientX + 16, y: e.clientY + 16 });
+  };
+
+  const openReviewsLink = () => {
+    window.open('https://share.google/x6WaKMeOHWQ18kr75', '_blank');
   };
 
   return (
@@ -98,8 +125,8 @@ const Testimonials = () => {
         </div>
 
         <div className="relative max-w-4xl mx-auto px-4">
-          <div className="overflow-hidden">
-            <div 
+          <div className="overflow-hidden" onMouseEnter={() => { setIsHovering(true); stopAutoplay(); }} onMouseLeave={() => { setIsHovering(false); autoplayRef.current = window.setInterval(() => setActiveIndex(prev => (prev + 1) % testimonials.length), 4000); }} onMouseMove={handleMouseMove}>
+            <div
               className="flex transition-transform duration-500 ease-in-out"
               style={{ transform: `translateX(-${activeIndex * 100}%)` }}
             >
