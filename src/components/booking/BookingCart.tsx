@@ -145,7 +145,7 @@ const BookingCart = ({ cartItems, travelCost, paymentMethod, formData = {} }: Bo
                   <div key={`cart-item-${index}`} className="bg-gray-50 rounded-lg p-3">
                     <div className="flex items-center gap-3 mb-2">
                       <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
-                        <img
+                        <img loading="lazy"
                           src={item.image}
                           alt={item.name}
                           className="w-full h-full object-cover"
