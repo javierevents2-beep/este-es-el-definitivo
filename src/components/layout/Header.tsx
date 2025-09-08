@@ -10,6 +10,9 @@ const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState<boolean>(Boolean(typeof window !== 'undefined' && localStorage.getItem('site_admin_mode')));
+  const [showAdminModal, setShowAdminModal] = useState(false);
+  const [adminModalKey, setAdminModalKey] = useState('');
+  const [adminModalError, setAdminModalError] = useState('');
   const location = useLocation();
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -37,15 +40,24 @@ const Header = () => {
 
   const toggleAdminFromHeader = () => {
     if (!isAdmin) {
-      const adminPassword = prompt('Senha de administrador:');
-      if (adminPassword === '1234') {
-        notifyAdminChange(true);
-        navigate('/store');
-      } else if (adminPassword !== null) {
-        alert('Senha incorreta');
-      }
+      setAdminModalKey('');
+      setAdminModalError('');
+      setShowAdminModal(true);
     } else {
       notifyAdminChange(false);
+    }
+  };
+
+  const submitAdminModal = () => {
+    if (!adminModalKey) { setAdminModalError('Introduce la clave'); return; }
+    if (adminModalKey === '1234') {
+      notifyAdminChange(true);
+      setShowAdminModal(false);
+      setAdminModalKey('');
+      setAdminModalError('');
+      navigate('/store');
+    } else {
+      setAdminModalError('Clave incorrecta');
     }
   };
 
@@ -212,6 +224,27 @@ const Header = () => {
         </div>
       </div>
 
+      {showAdminModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+          <div className="bg-white rounded-lg max-w-md w-full p-6 shadow-xl">
+            <h3 className="text-xl font-semibold mb-2">Acceso al panel de tienda</h3>
+            <p className="text-sm text-gray-600 mb-4">Introduce la clave de administrador para acceder al panel.</p>
+            <input
+              type="password"
+              autoFocus
+              value={adminModalKey}
+              onChange={(e) => setAdminModalKey(e.target.value)}
+              className="w-full border border-gray-200 rounded px-3 py-2 mb-3 focus:outline-none focus:ring-2 focus:ring-secondary"
+              placeholder="Clave de acceso"
+            />
+            {adminModalError && <div className="text-red-500 text-sm mb-3">{adminModalError}</div>}
+            <div className="flex justify-end gap-3">
+              <button onClick={() => { setShowAdminModal(false); setAdminModalKey(''); setAdminModalError(''); }} className="px-4 py-2 border rounded">Cancelar</button>
+              <button onClick={submitAdminModal} className="px-4 py-2 bg-primary text-white rounded">Entrar</button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </header>
   );
