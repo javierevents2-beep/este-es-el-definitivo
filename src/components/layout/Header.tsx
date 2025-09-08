@@ -173,9 +173,9 @@ const Header = () => {
             aria-label="Toggle menu"
           >
             {mobileMenuOpen ? (
-              <X size={24} className="text-primary" />
+              <X size={24} className={`${isScrolled || !isHomePage ? 'text-white' : 'text-primary'}`} />
             ) : (
-              <Menu size={24} className="text-white" />
+              <Menu size={24} className={`${isScrolled || !isHomePage ? 'text-white' : 'text-primary'}`} />
             )}
           </button>
         </div>
