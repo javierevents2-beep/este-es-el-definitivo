@@ -16,6 +16,6 @@ const app = initializeApp(firebaseConfig);
 
 export const db = initializeFirestore(app, { experimentalAutoDetectLongPolling: true, useFetchStreams: false });
 export const auth = getAuth(app);
-export const storage = getStorage(app);
+export const storage = getStorage(app, 'gs://wild-pictures-studio-contratos.firebasestorage.app');
 
 export default app;
