@@ -57,7 +57,7 @@ const Hero = () => {
             <div className="flex flex-wrap gap-4">
               <button
                 onClick={() => navigate('/portfolio')}
-                className="btn-secondary"
+                className="btn-secondary hero-cta-black"
               >
                 {t('home.hero.cta.portfolio')}
               </button>
