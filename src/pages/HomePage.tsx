@@ -18,7 +18,7 @@ const HomePage = () => {
     <>
       <Hero />
 
-      <section className="py-20 bg-accent/10">
+      <section id="nossos-servicos" className="py-20 bg-accent/10">
         <div className="container-custom">
           <div className="text-center max-w-3xl mx-auto">
             <h2 className="section-title mx-auto after:left-1/2 after:-translate-x-1/2 mb-8">
