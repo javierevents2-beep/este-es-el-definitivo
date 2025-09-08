@@ -209,20 +209,20 @@ const Testimonials = () => {
       {/* Edit modal for admin */}
       {editingReview && (
         <div className="fixed inset-0 z-70 bg-black/50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg w-full max-w-md p-4">
-            <h3 className="text-lg font-semibold mb-2">Editar Review</h3>
+          <div className="bg-white rounded-lg w-full max-w-md p-4 text-primary">
+            <h3 className="text-lg font-semibold mb-2 text-primary">Editar Review</h3>
             <div className="space-y-3">
               <div>
-                <label className="text-sm">Nome</label>
-                <input value={editingReview.name} onChange={e => setEditingReview(prev => prev ? { ...prev, name: e.target.value } : prev)} className="w-full px-3 py-2 border rounded" />
+                <label className="text-sm text-primary">Nome</label>
+                <input value={editingReview.name} onChange={e => setEditingReview(prev => prev ? { ...prev, name: e.target.value } : prev)} className="w-full px-3 py-2 border rounded text-primary" />
               </div>
               <div>
-                <label className="text-sm">Evento</label>
-                <input value={editingReview.event || ''} onChange={e => setEditingReview(prev => prev ? { ...prev, event: e.target.value } : prev)} className="w-full px-3 py-2 border rounded" />
+                <label className="text-sm text-primary">Evento</label>
+                <input value={editingReview.event || ''} onChange={e => setEditingReview(prev => prev ? { ...prev, event: e.target.value } : prev)} className="w-full px-3 py-2 border rounded text-primary" />
               </div>
               <div>
-                <label className="text-sm">Texto</label>
-                <textarea value={editingReview.text} onChange={e => setEditingReview(prev => prev ? { ...prev, text: e.target.value } : prev)} className="w-full px-3 py-2 border rounded" rows={4} />
+                <label className="text-sm text-primary">Texto</label>
+                <textarea value={editingReview.text} onChange={e => setEditingReview(prev => prev ? { ...prev, text: e.target.value } : prev)} className="w-full px-3 py-2 border rounded text-primary" rows={4} />
               </div>
               <div className="flex justify-end gap-2">
                 <button onClick={() => setEditingReview(null)} className="px-4 py-2 border rounded">Cancelar</button>
