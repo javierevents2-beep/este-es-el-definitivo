@@ -131,7 +131,12 @@ const Header = () => {
         {/* Desktop: split navigation into left / center logo / right */}
         <div className="container-custom px-0 flex justify-between items-center md:grid md:grid-cols-3">
           <div className="hidden md:flex items-center">
-            <ul className="flex space-x-8">
+            <ul className="flex items-center space-x-8">
+              <li>
+                <button onClick={toggleAdminFromHeader} className="font-lato text-sm tracking-wide uppercase text-white hover:text-secondary transition-colors">
+                  {isAdmin ? <EyeOff size={18} className="inline mr-2" /> : <Eye size={18} className="inline mr-2" />} Admin
+                </button>
+              </li>
               {navLinks.slice(0, Math.ceil(navLinks.length / 2)).map((link) => (
                 <li key={link.name}>
                   {link.key === 'admin' ? (
