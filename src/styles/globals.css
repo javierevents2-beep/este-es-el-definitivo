@@ -81,7 +81,7 @@
   }
 
   .card {
-    @apply bg-white rounded-xl border border-gray-200 p-6 md:p-8 shadow-sm transition-shadow;
+    @apply bg-white rounded-xl border-2 border-black p-6 md:p-8 shadow-sm transition-shadow;
   }
   .card:hover {
     @apply shadow-md ring-1 ring-secondary/30;
