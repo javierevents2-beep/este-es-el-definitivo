@@ -30,6 +30,13 @@ const StorePage = () => {
 
 
   useEffect(() => {
+    const handler = (e: Event | any) => {
+      const val = e?.detail ?? (localStorage.getItem('site_admin_mode') ? true : false);
+      setIsAdmin(Boolean(val));
+    };
+    window.addEventListener('siteAdminModeChanged', handler as EventListener);
+    window.addEventListener('storage', handler as EventListener);
+
     const seedIfEmpty = async () => {
       if (typeof navigator !== 'undefined' && !navigator.onLine) return;
       if (products.length === 0 && !localStorage.getItem('seeded_products')) {
@@ -57,6 +64,11 @@ const StorePage = () => {
       }
     };
     seedIfEmpty();
+    // cleanup
+    return () => {
+      window.removeEventListener('siteAdminModeChanged', handler as EventListener);
+      window.removeEventListener('storage', handler as EventListener);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [products.length]);
 
