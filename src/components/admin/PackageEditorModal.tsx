@@ -56,8 +56,10 @@ const PackageEditorModal: React.FC<PackageEditorModalProps> = ({ open, onClose, 
         image_url: imageUrl,
         category: category || undefined,
       } as Partial<DBPackage>;
+      // include sections
+      (updates as any).sections = sections;
       await updatePackage(pkg.id, updates);
-      const updated: DBPackage = { ...pkg, ...updates } as DBPackage;
+      const updated: DBPackage = { ...pkg, ...updates, sections } as DBPackage;
       onSaved && onSaved(updated);
       onClose();
     } catch (e: any) {
