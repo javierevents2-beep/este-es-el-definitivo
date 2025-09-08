@@ -240,7 +240,7 @@ const Header = () => {
             {adminModalError && <div className="text-red-500 text-sm mb-3">{adminModalError}</div>}
             <div className="flex justify-end gap-3">
               <button onClick={() => { setShowAdminModal(false); setAdminModalKey(''); setAdminModalError(''); }} className="px-4 py-2 border rounded">Cancelar</button>
-              <button onClick={submitAdminModal} className="px-4 py-2 bg-primary text-white rounded">Entrar</button>
+              <button onClick={submitAdminModal} className="px-4 py-2 bg-primary text-white rounded">Acessar</button>
             </div>
           </div>
         </div>
