@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { X, Plus, Trash2, Upload } from 'lucide-react';
+import { X, Plus, Trash2, Upload, Check } from 'lucide-react';
 import { db } from '../../utils/firebaseClient';
-import { addDoc, collection, doc, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, doc, updateDoc, getDocs } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 export interface ProductInput {
@@ -42,6 +42,10 @@ const ProductEditorModal: React.FC<Props> = ({ open, onClose, product, onSaved }
   const [saving, setSaving] = useState(false);
   const fileRef = useRef<HTMLInputElement | null>(null);
 
+  const [categories, setCategories] = useState<string[]>([]);
+  const [showNewCategory, setShowNewCategory] = useState(false);
+  const [newCategory, setNewCategory] = useState('');
+
   useEffect(() => {
     if (product) {
       setForm({
@@ -75,6 +79,19 @@ const ProductEditorModal: React.FC<Props> = ({ open, onClose, product, onSaved }
     }
   }, [product]);
 
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const snap = await getDocs(collection(db, 'products'));
+        const cats = Array.from(new Set(snap.docs.map(d => ((d.data() as any).category || '').trim()).filter(Boolean)));
+        setCategories(cats);
+      } catch (e) {
+        setCategories([]);
+      }
+    };
+    loadCategories();
+  }, []);
+
   const handleUpload = async (file: File) => {
     const storage = getStorage();
     const key = `product_images/${Date.now()}-${file.name}`;
@@ -82,6 +99,37 @@ const ProductEditorModal: React.FC<Props> = ({ open, onClose, product, onSaved }
     await uploadBytes(storageRef, file);
     const url = await getDownloadURL(storageRef);
     setForm(prev => ({ ...prev, image_url: url }));
+  };
+
+  const addCategory = () => {
+    const c = (newCategory || '').trim();
+    if (!c) return;
+    if (!categories.includes(c)) setCategories(prev => [...prev, c]);
+    setForm(prev => ({ ...prev, category: c }));
+    setNewCategory('');
+    setShowNewCategory(false);
+  };
+
+  const handleDeleteCategory = async () => {
+    const cat = form.category;
+    if (!cat) return;
+    if (!confirm(`Eliminar categoría "${cat}"? Se asignará la categoría "otros" a los productos existentes.`)) return;
+    try {
+      const snap = await getDocs(collection(db, 'products'));
+      const updates: Promise<any>[] = [];
+      snap.docs.forEach(d => {
+        const data = d.data() as any;
+        if ((data.category || '') === cat) {
+          updates.push(updateDoc(doc(db, 'products', d.id), { category: 'otros' }));
+        }
+      });
+      await Promise.all(updates);
+      setCategories(prev => prev.filter(c => c !== cat));
+      setForm(prev => ({ ...prev, category: 'otros' }));
+    } catch (e) {
+      console.error('Error deleting category', e);
+      alert('Error al eliminar categoría');
+    }
   };
 
   const save = async () => {
@@ -139,9 +187,40 @@ const ProductEditorModal: React.FC<Props> = ({ open, onClose, product, onSaved }
               <input type="number" step="0.01" value={form.price} onChange={e => setForm({ ...form, price: Number(e.target.value) })} className="w-full px-3 py-2 border rounded-none" />
             </div>
             <div>
-              <label className="block text-sm text-gray-700 mb-1">Categoría</label>
-              <input value={form.category} onChange={e => setForm({ ...form, category: e.target.value })} className="w-full px-3 py-2 border rounded-none" />
+            <label className="block text-sm text-gray-700 mb-1">Categoría</label>
+            <div className="flex items-center gap-2">
+              <select value={form.category} onChange={(e) => {
+                const v = e.target.value;
+                if (v === '__add_new__') { setShowNewCategory(true); setNewCategory(''); } else {
+                  setForm(prev => ({ ...prev, category: v }));
+                }
+              }} className="px-3 py-2 border rounded-md">
+                <option value="">Seleccionar</option>
+                {categories.map(c => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
+                <option value="__add_new__">+ Agregar nueva...</option>
+              </select>
+
+              <button type="button" title="Agregar" onClick={() => { setShowNewCategory(true); setNewCategory(''); }} className="p-2 border rounded text-gray-600">
+                <Plus size={14} />
+              </button>
+
+              {form.category && form.category !== 'otros' && (
+                <button type="button" title="Eliminar categoría" onClick={handleDeleteCategory} className="p-2 border rounded text-gray-600">
+                  <Trash2 size={14} />
+                </button>
+              )}
             </div>
+
+            {showNewCategory && (
+              <div className="mt-2 flex items-center gap-2">
+                <input value={newCategory} onChange={e => setNewCategory(e.target.value)} className="px-3 py-2 border rounded-md flex-1" placeholder="Nueva categoría" />
+                <button type="button" onClick={addCategory} className="p-2 bg-primary text-white rounded"><Check size={14} /></button>
+                <button type="button" onClick={() => { setShowNewCategory(false); setNewCategory(''); }} className="p-2 border rounded text-gray-600"><X size={14} /></button>
+              </div>
+            )}
+          </div>
           </div>
 
           <div>
