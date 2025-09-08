@@ -86,9 +86,9 @@ const Testimonials = () => {
                 >
                   <div className="bg-white/10 p-8 rounded-lg text-center">
                     <div className="w-20 h-20 rounded-full overflow-hidden mx-auto mb-4">
-                      <img 
-                        src={testimonial.image} 
-                        alt={testimonial.name} 
+                      <img loading="lazy"
+                        src={testimonial.image}
+                        alt={testimonial.name}
                         className="w-full h-full object-cover"
                       />
                     </div>
