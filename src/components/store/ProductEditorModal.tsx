@@ -45,6 +45,8 @@ const ProductEditorModal: React.FC<Props> = ({ open, onClose, product, onSaved }
   const [categories, setCategories] = useState<string[]>([]);
   const [showNewCategory, setShowNewCategory] = useState(false);
   const [newCategory, setNewCategory] = useState('');
+  const [showDeleteCatConfirm, setShowDeleteCatConfirm] = useState(false);
+  const [deletingCategory, setDeletingCategory] = useState<string | null>(null);
 
   useEffect(() => {
     if (product) {
@@ -111,9 +113,8 @@ const ProductEditorModal: React.FC<Props> = ({ open, onClose, product, onSaved }
   };
 
   const handleDeleteCategory = async () => {
-    const cat = form.category;
+    const cat = deletingCategory || form.category;
     if (!cat) return;
-    if (!confirm(`Eliminar categoría "${cat}"? Se asignará la categoría "otros" a los productos existentes.`)) return;
     try {
       const snap = await getDocs(collection(db, 'products'));
       const updates: Promise<any>[] = [];
@@ -126,9 +127,13 @@ const ProductEditorModal: React.FC<Props> = ({ open, onClose, product, onSaved }
       await Promise.all(updates);
       setCategories(prev => prev.filter(c => c !== cat));
       setForm(prev => ({ ...prev, category: 'otros' }));
+      setShowDeleteCatConfirm(false);
+      setDeletingCategory(null);
     } catch (e) {
       console.error('Error deleting category', e);
       alert('Error al eliminar categoría');
+      setShowDeleteCatConfirm(false);
+      setDeletingCategory(null);
     }
   };
 
@@ -207,7 +212,7 @@ const ProductEditorModal: React.FC<Props> = ({ open, onClose, product, onSaved }
               </button>
 
               {form.category && form.category !== 'otros' && (
-                <button type="button" title="Eliminar categoría" onClick={handleDeleteCategory} className="p-2 border rounded text-gray-600">
+                <button type="button" title="Eliminar categoría" onClick={() => { setDeletingCategory(form.category); setShowDeleteCatConfirm(true); }} className="p-2 border rounded text-gray-600">
                   <Trash2 size={14} />
                 </button>
               )}
@@ -282,6 +287,20 @@ const ProductEditorModal: React.FC<Props> = ({ open, onClose, product, onSaved }
           <button onClick={save} disabled={saving} className="px-4 py-2 rounded-none bg-black text-white disabled:opacity-50">{saving ? 'Guardando...' : (form.id ? 'Actualizar Producto' : 'Crear Producto')}</button>
         </div>
       </div>
+
+      {showDeleteCatConfirm && (
+        <div className="fixed inset-0 z-60 flex items-center justify-center bg-black bg-opacity-40 p-4">
+          <div className="bg-white rounded-lg max-w-md w-full p-6 shadow-lg">
+            <h3 className="text-lg font-semibold mb-2">Confirmar eliminación</h3>
+            <p className="text-sm text-gray-600 mb-4">¿Estás seguro de que deseas eliminar la categoría "{deletingCategory || form.category}"? Esto reasignará los productos a la categoría "otros".</p>
+            <div className="flex justify-end gap-3">
+              <button onClick={() => { setShowDeleteCatConfirm(false); setDeletingCategory(null); }} className="px-4 py-2 border rounded">Cancelar</button>
+              <button onClick={handleDeleteCategory} className="px-4 py-2 bg-red-600 text-white rounded">Eliminar</button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };
