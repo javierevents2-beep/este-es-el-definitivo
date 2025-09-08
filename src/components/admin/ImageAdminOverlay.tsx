@@ -24,11 +24,25 @@ function makeButton() {
 }
 
 async function uploadFileAndGetURL(file: File) {
+  if (!auth || !auth.currentUser) {
+    alert('Debes iniciar sesión como administrador para subir imágenes.');
+    throw new Error('NOT_AUTHENTICATED');
+  }
   const key = `site_admin_uploads/${Date.now()}-${file.name}`;
   const storageRef = ref(storage, key);
-  await uploadBytes(storageRef, file);
-  const url = await getDownloadURL(storageRef);
-  return url;
+  try {
+    await uploadBytes(storageRef, file);
+    const url = await getDownloadURL(storageRef);
+    return url;
+  } catch (e: any) {
+    console.error('Upload failed', e);
+    if (e && e.code === 'storage/unauthorized') {
+      alert('No tienes permiso para subir archivos al storage. Verifica las reglas de Firebase Storage o tu sesión de administrador.');
+    } else {
+      alert('Error al subir la imagen. Revisa la consola para más detalles.');
+    }
+    throw e;
+  }
 }
 
 async function handleFilesForImage(img: HTMLImageElement, files: FileList | null) {
