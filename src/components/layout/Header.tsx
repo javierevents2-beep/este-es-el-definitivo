@@ -124,7 +124,7 @@ const Header = () => {
           </Link>
         ) : (
           <div className="z-50">
-            <Logo dark={false} />
+            <Logo dark={!(isScrolled || !isHomePage)} />
           </div>
         )}
 
