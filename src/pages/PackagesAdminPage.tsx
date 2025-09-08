@@ -217,7 +217,7 @@ const PackagesAdminPage = () => {
                   </div>
                 )}
                 <div className="relative">
-                  <img src={p.image_url} alt={p.title} className="w-full h-48 object-cover" />
+                  <img loading="lazy" src={p.image_url} alt={p.title} className="w-full h-48 object-cover" />
                   {p.category && (
                     <div className="absolute top-2 left-2 bg-black/70 text-white px-2 py-1 rounded text-xs">{p.category}</div>
                   )}
