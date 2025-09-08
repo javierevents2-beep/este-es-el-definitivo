@@ -115,28 +115,53 @@ const ProductEditorModal: React.FC<Props> = ({ open, onClose, product, onSaved }
     setShowNewCategory(false);
   };
 
+  useEffect(() => {
+    const loadAffected = async () => {
+      if (!showDeleteCatConfirm) return;
+      const cat = deletingCategory || form.category;
+      if (!cat) return;
+      setLoadingAffected(true);
+      try {
+        const snap = await getDocs(collection(db, 'products'));
+        const list = snap.docs.map(d => ({ id: d.id, name: (d.data() as any).name || 'Producto' }));
+        const affected = (snap.docs)
+          .map(d => ({ id: d.id, name: (d.data() as any).name || 'Producto' , category: (d.data() as any).category || '' }))
+          .filter(p => p.category === cat)
+          .map(p => ({ id: p.id, name: p.name, newCategory: 'otros' }));
+        setAffectedProducts(affected);
+      } catch (e) {
+        setAffectedProducts([]);
+      } finally {
+        setLoadingAffected(false);
+      }
+    };
+    loadAffected();
+  }, [showDeleteCatConfirm, deletingCategory, form.category]);
+
   const handleDeleteCategory = async () => {
     const cat = deletingCategory || form.category;
     if (!cat) return;
     try {
-      const snap = await getDocs(collection(db, 'products'));
       const updates: Promise<any>[] = [];
-      snap.docs.forEach(d => {
-        const data = d.data() as any;
-        if ((data.category || '') === cat) {
-          updates.push(updateDoc(doc(db, 'products', d.id), { category: 'otros' }));
-        }
-      });
+      const targets = affectedProducts.length ? affectedProducts : [];
+      for (const p of targets) {
+        const targetCat = p.newCategory || 'otros';
+        updates.push(updateDoc(doc(db, 'products', p.id), { category: targetCat }));
+      }
       await Promise.all(updates);
       setCategories(prev => prev.filter(c => c !== cat));
       setForm(prev => ({ ...prev, category: 'otros' }));
       setShowDeleteCatConfirm(false);
       setDeletingCategory(null);
+      setAffectedProducts([]);
+      setBulkReassign(null);
     } catch (e) {
       console.error('Error deleting category', e);
       alert('Error al eliminar categoría');
       setShowDeleteCatConfirm(false);
       setDeletingCategory(null);
+      setAffectedProducts([]);
+      setBulkReassign(null);
     }
   };
 
